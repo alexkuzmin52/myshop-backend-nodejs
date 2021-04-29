@@ -1,0 +1,6 @@
+extends template
+block content
+    | Добро пожаловать на сайт ... !
+    | Для подтверждения перейдите по ссылке
+    div
+        a(href=frontendUrl + `/confirm/` + token) confirm
