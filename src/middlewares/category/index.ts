@@ -6,3 +6,6 @@ export * from './create-sub-category-validator-middleware';
 export * from './create-sub-sub-category-validator-middleware';
 export * from './check-is-subCategory-already-added-to-category-middleware';
 export * from './check-is-subSubCategory-already-added-to-SubCategory-middleware';
+export * from './check-is-category-empty-middleware';
+export * from './check-is-sub-category-empty-middleware';
+export * from './check-is-sub-sub-category-empty-middleware';

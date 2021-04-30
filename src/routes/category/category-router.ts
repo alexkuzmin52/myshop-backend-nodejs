@@ -2,12 +2,12 @@ import {Router} from 'express';
 
 import {categoryController} from '../../controllers';
 import {
-  checkAccessTokenMiddleware,
+  checkAccessTokenMiddleware, checkIsCategoryEmptyMiddleware,
   checkIsExistCategoryMiddleware,
   checkIsExistSubCategoryMiddleware,
   checkIsExistSubSubCategoryMiddleware,
-  CheckIsSubCategoryAlreadyAddedToCategoryMiddleware,
-  CheckIsSubSubCategoryAlreadyAddedToSubCategoryMiddleware,
+  CheckIsSubCategoryAlreadyAddedToCategoryMiddleware, checkIsSubCategoryEmptyMiddleware,
+  CheckIsSubSubCategoryAlreadyAddedToSubCategoryMiddleware, checkIsSubSubCategoryEmptyMiddleware,
   createCategoryValidatorMiddleware,
   createSubCategoryValidatorMiddleware,
   createSubSubCategoryValidatorMiddleware
@@ -61,24 +61,27 @@ router.post('/subsubcategory/logo/:cat_id',
   uploadSubSubCategory.single('file'),
   categoryController.updateSubSubCategory);
 
-router.get('/subcategory',categoryController.GetAllSubCategories);
-router.get('/subsubcategory',categoryController.GetAllSubSubCategories);
+router.get('/subcategory', categoryController.GetAllSubCategories);
+router.get('/subsubcategory', categoryController.GetAllSubSubCategories);
 
-router.get('/:title',categoryController.GetCategory);
-router.get('/subcategory/:title',categoryController.GetSubCategory);
-router.get('/subsubcategory/:title',categoryController.GetSubSubCategory);
-router.get('',categoryController.GetAllCategories);
+router.get('/:cat_id', categoryController.GetCategory);
+router.get('/subcategory/:cat_id', categoryController.GetSubCategory);
+router.get('/subsubcategory/:cat_id', categoryController.GetSubSubCategory);
+router.get('', categoryController.GetAllCategories);
 
 router.get('/logo/:cat_id', categoryController.getLogo);
 router.get('/subcategory/logo/:cat_id', categoryController.getSubLogo);
 router.get('/subsubcategory/logo/:cat_id', categoryController.getSubSubLogo);
 
 router.put('/:cat_id', checkAccessTokenMiddleware, categoryController.updateCategory);
-router.put('/subcategory/:cat_id',checkAccessTokenMiddleware, categoryController.updateSubCategory);
-router.put('/subsubcategory/:cat_id', categoryController.updateSubSubCategory);
+router.put('/subcategory/:cat_id', checkAccessTokenMiddleware, categoryController.updateSubCategory);
+router.put('/subsubcategory/:cat_id', checkAccessTokenMiddleware, categoryController.updateSubSubCategory);
 
-router.delete('/', categoryController.DeleteCategory);
-router.delete('/subcategory', categoryController.deleteSubCategory);
-router.delete('/subsubcategory', categoryController.deleteSubSubCategory);
+router.delete('/:cat_id', checkAccessTokenMiddleware, checkIsCategoryEmptyMiddleware,
+  categoryController.DeleteCategory);
+router.delete('/subcategory/:cat_id', checkAccessTokenMiddleware, checkIsSubCategoryEmptyMiddleware,
+  categoryController.deleteSubCategory);
+router.delete('/subsubcategory/:cat_id', checkAccessTokenMiddleware, checkIsSubSubCategoryEmptyMiddleware,
+  categoryController.deleteSubSubCategory);
 
 export const categoryRouter = router;

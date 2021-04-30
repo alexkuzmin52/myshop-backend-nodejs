@@ -111,6 +111,14 @@ export const customErrors = {
   BAD_REQUEST_SUB_SUB_CATEGORY_TO_SUB_CATEGORY_ALREADY_ADDED: {
     message: 'SubSubcategory has already been added to the category',
     code: 4020
+  },
+  BAD_REQUEST_CATEGORY_NOT_EMPTY: {
+    message: 'Category contains subcategories',
+    code: 4021
+  },
+  BAD_REQUEST_SUB_CATEGORY_NOT_EMPTY: {
+    message: 'SubCategory contains subSubcategories',
+    code: 4022
   }
 
 };

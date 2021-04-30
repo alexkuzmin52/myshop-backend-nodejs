@@ -57,8 +57,12 @@ export class CategoryService {
       {new: true}).exec();
   }
 
-  getSubCategoryByParams(sub: Partial<ISubCategory>): Promise<SubCategoryType | null> {
-    return SubCategoryModel.findOne(sub).exec();
+  getCategoryByParams(param: Partial<ICategory>): Promise<CategoryType | null> {
+    return CategoryModel.findOne(param).exec();
+  }
+
+  getSubCategoryByParams(param: Partial<ISubCategory>): Promise<SubCategoryType | null> {
+    return SubCategoryModel.findOne(param).exec();
   }
 
   getSubSubCategoryByParams(subsub: Partial<ISubSubCategory>): Promise<SubSubCategoryType | null> {
@@ -107,17 +111,20 @@ export class CategoryService {
   }
 
   removeCategory(idCategory: Partial<ICategory>): Promise<{ deletedCount?: number }> {
+    console.log('idCategory');
+    console.log(idCategory);
+
     return CategoryModel.deleteOne(idCategory).exec();
   }
 
-  removeSubCategory(parentID: Partial<ICategory>): Promise<{ deletedCount?: number }> {
-    return SubCategoryModel.deleteMany(parentID).exec();
+  removeSubCategory(idSubCategory: Partial<ISubCategory>): Promise<{ deletedCount?: number } > {
+    return SubCategoryModel.deleteOne(idSubCategory).exec();
   }
 
-  removeSubSubCategory(subcategoryID: number): Promise<{ deletedCount?: number }> {
+  removeSubSubCategory(idSubSubCategory: Partial<ISubSubCategory>): Promise<{ deletedCount?: number }> {
     // console.log(subcategoryID);
 
-    return SubSubCategoryModel.deleteMany({parentID: subcategoryID}).exec();
+    return SubSubCategoryModel.deleteOne(idSubSubCategory).exec();
   }
 
   //  Sub Category========================================================================
