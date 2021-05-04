@@ -1,14 +1,14 @@
 import {NextFunction, Response} from 'express';
 
 import {IRequestExtended} from '../../models';
+import {ResponseStatusCodeEnum} from '../../constants';
 import {categoryService} from '../../services';
 import {customErrors, ErrorHandler} from '../../errors';
-import {ResponseStatusCodeEnum} from '../../constants';
 
 export const checkIsSubSubCategoryEmptyMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<void> => {
 
   const subsubcategory = await categoryService.getSubSubCategoryByParams({id: +req.params.cat_id});
-  // req.params.cat_id
+
   if (!subsubcategory) {
     return next(new ErrorHandler(
       ResponseStatusCodeEnum.NOT_FOUND,

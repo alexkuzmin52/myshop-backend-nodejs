@@ -227,6 +227,10 @@ export class CategoryService {
   //   }
   // }
 
+  // deleteSubCategoryFromCategory(id: ISubCategory): Promise<CategoryType |null> {
+  //
+  //
+  // }
 }
 
 export const categoryService = new CategoryService();

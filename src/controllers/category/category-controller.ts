@@ -8,8 +8,6 @@ import * as fs from 'fs';
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
 import {customErrors, ErrorHandler} from '../../errors';
 
-// import {CategoryModel} from '../../database/models/category';
-
 class CategoryController {
 // ****************************************************** create ************************************************
   createCategory = async (req: IRequestExtended, res: Response, next: NextFunction) => {
@@ -88,6 +86,7 @@ class CategoryController {
           res.json(updatedCategory);
         }
       }
+      res.json(updatedSubCategory);
       // else {res.json({error: 'Unknown error'});}
 
     } catch (e) {
@@ -187,14 +186,6 @@ class CategoryController {
     DeleteCategory = async (req: IRequestExtended, res: Response, next: NextFunction) => {
       try {
         const category = req.body as ICategory;
-        // console.log(category);
-        // for (const sub of category.subCategories) {
-        //   await categoryService.removeSubSubCategory(sub.id);
-        // }
-        //
-        // // await categoryService.removeSubSubCategory(category);
-        // await categoryService.removeSubCategory({parentID: category.id});
-        //
         const deletedCategory = await categoryService.removeCategory({id: category.id});
         res.json(deletedCategory);
       } catch (e) {
@@ -202,23 +193,6 @@ class CategoryController {
       }
     }
 
-    // async DeleteCategory(req: Request, res: Response, next: NextFunction) {
-    //   try {
-    //     const category = req.body as ICategory;
-    //     // console.log(category);
-    //     for (const sub of category.subCategories) {
-    //       await categoryService.removeSubSubCategory(sub.id);
-    //     }
-    //
-    //     // await categoryService.removeSubSubCategory(category);
-    //     await categoryService.removeSubCategory({parentID: category.id});
-    //
-    //     const deletedCategory = await categoryService.removeCategory({id: category.id});
-    //     res.json(deletedCategory);
-    //   } catch (e) {
-    //     next(e);
-    //   }
-    // }
 
    // delete Sub Category ==========================================================================================
    deleteSubCategory = async (req: Request, res: Response, next: NextFunction)=> {
@@ -227,34 +201,11 @@ class CategoryController {
 
        const deletedSubCategory = await categoryService.removeSubCategory({id: subcategory.id});
        res.json(deletedSubCategory);
-
-       // const subcategory = req.body.title as ISubCategory;
-       // const subcategory = req.body as ISubCategory;
-       // // console.log(subcategory);
-       // await categoryService.removeOneSubCategory({id: subcategory.id});
-       // await categoryService.removeSubSubCategoryFromOneSubCategory({parentID: subcategory.id});
-       // await categoryService.removeOneSubCategoryFromCategory(subcategory);
-       // res.json({message: 'done'});
      } catch (e) {
        next(e);
      }
    }
 
-   // async deleteSubCategory(req: Request, res: Response, next: NextFunction) {
-   //   try {
-   //     // const subcategory = req.body.title as ISubCategory;
-   //     const subcategory = req.body as ISubCategory;
-   //     // console.log(subcategory);
-   //     await categoryService.removeOneSubCategory({id: subcategory.id});
-   //     await categoryService.removeSubSubCategoryFromOneSubCategory({parentID: subcategory.id});
-   //     await categoryService.removeOneSubCategoryFromCategory(subcategory);
-   //     res.json({message: 'done'});
-   //   } catch (e) {
-   //     next(e);
-   //   }
-   // }
-
-   // delete Sub Sub Category ======================================================================================
    deleteSubSubCategory = async (req: Request, res: Response, next: NextFunction) => {
      try {
        const subsubcategory = req.body as ISubSubCategory;
@@ -262,34 +213,11 @@ class CategoryController {
        const deletedSubSubCategory = await categoryService.removeSubSubCategory({id: subsubcategory.id});
        res.json(deletedSubSubCategory);
 
-       // await categoryService.removeOneSubSubCategory(subsubcategory.id);
-       // const updatedSubCategory = await categoryService.removeOneSubSubCategoryFromSubCategory(subsubcategory);
-       // await updatedSubCategory?.save();
-       // const cat = await categoryService.getCategory(updatedSubCategory?.parentID as Partial<ICategory>);
-       //
-       // const updatedCategory = categoryService.updateCategoryBySubCategory(cat as CategoryType, updatedSubCategory as ISubCategory);
-       // res.json(updatedCategory);
 
      } catch (e) {
        next(e);
      }
    }
-
-   // async deleteSubSubCategory(req: Request, res: Response, next: NextFunction) {
-   //   try {
-   //     const subsubcategory = req.body as ISubSubCategory;
-   //     await categoryService.removeOneSubSubCategory(subsubcategory.id);
-   //     const updatedSubCategory = await categoryService.removeOneSubSubCategoryFromSubCategory(subsubcategory);
-   //     await updatedSubCategory?.save();
-   //     const cat = await categoryService.getCategory(updatedSubCategory?.parentID as Partial<ICategory>);
-   //
-   //     const updatedCategory = categoryService.updateCategoryBySubCategory(cat as CategoryType, updatedSubCategory as ISubCategory);
-   //     res.json(updatedCategory);
-   //
-   //   } catch (e) {
-   //     next(e);
-   //   }
-   // }
 
    // ****************************************************** update ************************************************
 
@@ -304,8 +232,6 @@ class CategoryController {
 
    async updateSubCategory(req: IRequestExtended, res: Response, next: NextFunction) {
      try {
-       // console.log(req.body);
-       // console.log(req.params);
 
        const sub_id = +req.params.cat_id as Partial<ISubCategory>;
        const sub = req.body;
@@ -342,10 +268,6 @@ class CategoryController {
      }
    }
 
-   // async test(req: Request, res: Response, next: NextFunction) {
-   //   console.log(req.body);
-   //   await res.json({message: 'done!'});
-   // }
 
    // async addCategoryLogo(req: Request, res: Response, next: NextFunction) {
    //   const categoryID = req.body as Partial<ICategory>;

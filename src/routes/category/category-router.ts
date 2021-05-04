@@ -41,11 +41,13 @@ router.post('/subsubcategory',
   categoryController.createSubSubCategory);
 
 router.put('/addsubcategory',
+  checkAccessTokenMiddleware,
   CheckIsSubCategoryAlreadyAddedToCategoryMiddleware,
   categoryController.addSubCategory
 );
 
 router.put('/addsubsubcategory',
+  checkAccessTokenMiddleware,
   checkAccessTokenMiddleware,
   CheckIsSubSubCategoryAlreadyAddedToSubCategoryMiddleware,
   categoryController.addSubSubCategory

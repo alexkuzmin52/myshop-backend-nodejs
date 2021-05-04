@@ -6,7 +6,6 @@ import {ResponseStatusCodeEnum} from '../../constants';
 
 export const CheckIsSubCategoryAlreadyAddedToCategoryMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction) => {
   const {id} = req.body as Partial<ISubCategory>;
-  console.log(id);
   const subCategory = await categoryService.getSubCategoryByParams({id});
   if (subCategory && subCategory.parentID > 0) {
     return next(new ErrorHandler(ResponseStatusCodeEnum.BAD_REQUEST,

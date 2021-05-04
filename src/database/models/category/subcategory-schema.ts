@@ -27,7 +27,7 @@ export const SubCategorySchema = new Schema<ISubCategory>({
     type: String,
     default: ''
   },
-  subSubCategories: [SubSubCategorySchema]
+  subSubCategories: {type: [SubSubCategorySchema], excludeIndexes: true}
 
 });
 

@@ -1,9 +1,8 @@
 import * as Joi from 'joi';
 import {NextFunction, Request, Response} from 'express';
 
-// import {ISubSubCategory} from '../../models';
 import {createSubSubCategoryValidator} from '../../validators';
-import {ISubSubCategory} from '../../models/category';
+import {ISubSubCategory} from '../../models';
 
 export const createSubSubCategoryValidatorMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const subSubCategory = req.body as Partial<ISubSubCategory>;

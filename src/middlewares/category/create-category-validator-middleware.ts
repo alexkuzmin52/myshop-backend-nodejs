@@ -6,8 +6,6 @@ import {createCategoryValidator} from '../../validators';
 
 export const createCategoryValidatorMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const category = req.body as ICategory;
-  console.log('createCategoryValidatorMiddleware');
-  console.log(category);
   const {error} = Joi.validate(category, createCategoryValidator);
 
   if (error) {

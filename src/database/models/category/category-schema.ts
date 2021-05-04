@@ -29,7 +29,7 @@ export const CategorySchema = new Schema<ICategory>({
     type: String,
     default: ''
   },
-  subCategories: [SubCategorySchema]
+  subCategories: {type:[SubCategorySchema], excludeIndexes: true}
 },
 {timestamps: true}
 );
