@@ -13,9 +13,9 @@ import {
   createSubSubCategoryValidatorMiddleware
 } from '../../middlewares';
 
-import {uploadCategory} from '../../config/category-multer-config';
-import {uploadSubCategory} from '../../config/subcategory-multer-config';
-import {uploadSubSubCategory} from '../../config/subsubcategory-multer-config';
+import {uploadCategory} from '../../config/multer/category/category-multer-config';
+import {uploadSubCategory} from '../../config/multer/category/subcategory-multer-config';
+import {uploadSubSubCategory} from '../../config/multer/category/subsubcategory-multer-config';
 // import {checkIsNotExistCategoryMiddleware} from "../../middlewares/category/check-is-not-exist-category-middleware";
 
 const router = Router();

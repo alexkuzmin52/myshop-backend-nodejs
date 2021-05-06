@@ -1,10 +1,10 @@
-import {NextFunction, Request, Response} from 'express';
-import {IProduct} from '../../models';
+import {NextFunction, Response} from 'express';
+import {IProduct, IRequestExtended} from '../../models';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constants';
 import {productService} from '../../services';
 
-export const checkIsProductAlreadyExistMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const checkIsProductAlreadyExistMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<any> => {
   const {title} = req.body as IProduct;
   const productByTitle = await productService.findOneByProperty({title});
 

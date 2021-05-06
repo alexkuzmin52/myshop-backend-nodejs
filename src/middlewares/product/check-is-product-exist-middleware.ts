@@ -9,7 +9,8 @@ export const checkIsProductExistMiddleware = async (req: Request, res: Response,
   // console.log('req.query.productID');
   // console.log(req.query.productID);
   // const productByTitle = await productService.findOneByProperty({title});
-  const productByID = await productService.findByID(req.query.productID as string);
+  // const productByID = await productService.findByID(req.params.productID as string);
+  const productByID = await productService.findOneByProperty({ id: + req.params.productID});
 
   if (!productByID) {
     return next(new ErrorHandler(

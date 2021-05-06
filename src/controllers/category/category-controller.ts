@@ -14,7 +14,11 @@ class CategoryController {
     try {
       const newCategory = await categoryService.createCategory(req.body as Partial<ICategory>);
       const resCategory = await categoryService.getResCategory(newCategory.id);
-      await logService.createLog({event: ActionEnum.CATEGORY_CREATE, userId: req.user?._id, data: newCategory._id});
+      await logService.createLog({
+        event: ActionEnum.CATEGORY_CREATE,
+        userId: req.user?._id, data:
+          {id: newCategory._id, title: newCategory.title}
+      });
       res.json(resCategory);
     } catch (e) {
       next(e);
@@ -28,7 +32,7 @@ class CategoryController {
       await logService.createLog({
         event: ActionEnum.SUB_CATEGORY_CREATE,
         userId: req.user?._id,
-        data: newSubCategory._id
+        data: {id: newSubCategory._id,title: newSubCategory.title}
       });
 
       res.json(resSubCategory);
@@ -43,7 +47,7 @@ class CategoryController {
       await logService.createLog({
         event: ActionEnum.SUB_SUB_CATEGORY_CREATE,
         userId: req.user?._id,
-        data: newSubSubCategory._id
+        data: {id: newSubSubCategory._id, title: newSubSubCategory.title}
       });
       res.json(resSubSubCategory);
     } catch (e) {
@@ -193,7 +197,6 @@ class CategoryController {
       }
     }
 
-
    // delete Sub Category ==========================================================================================
    deleteSubCategory = async (req: Request, res: Response, next: NextFunction)=> {
      try {
@@ -212,7 +215,6 @@ class CategoryController {
 
        const deletedSubSubCategory = await categoryService.removeSubSubCategory({id: subsubcategory.id});
        res.json(deletedSubSubCategory);
-
 
      } catch (e) {
        next(e);
@@ -267,7 +269,6 @@ class CategoryController {
        next(e);
      }
    }
-
 
    // async addCategoryLogo(req: Request, res: Response, next: NextFunction) {
    //   const categoryID = req.body as Partial<ICategory>;

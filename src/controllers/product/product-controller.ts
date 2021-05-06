@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
+
 import {logService, productService} from '../../services';
-// import {Mongoose, Schema, Types} from 'mongoose';
 import {IRequestExtended, IUser} from '../../models';
 import {customErrors, ErrorHandler} from '../../errors';
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
@@ -18,15 +18,15 @@ export class ProductController {
 
   async getProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const product = await productService.getProduct(req.query.productID as string);
+      const product = await productService.getProduct(+req.params.productID);
 
       if (!product){
         next(new ErrorHandler(ResponseStatusCodeEnum.BAD_REQUEST,
           customErrors.BAD_REQUEST_GET_PRODUCT.message));
       }
+
       res.json(product);
     } catch (e) {
-      // console.log(e);
       next(e);
     }
   }
@@ -47,7 +47,8 @@ export class ProductController {
   async updateProduct(req: IRequestExtended, res: Response, next: NextFunction) {
     try {
       const {_id} = req.user as IUser;
-      const updatedProduct = await productService.updateProduct(req.query.productID as string, req.body);
+      const updatedProduct = await productService.updateProduct(+req.params.productID, req.body);
+
       if (updatedProduct) {
         await logService.createLog({event: ActionEnum.USER_UPDATE_PRODUCT, userId: _id, data: updatedProduct._id});
       }
@@ -59,12 +60,22 @@ export class ProductController {
 
   async deleteProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const deletedProduct = await productService.deleteProduct(req.query.productID as string);
+      const deletedProduct = await productService.deleteProduct(+req.params.productID);
+
       res.json(deletedProduct);
     } catch (e) {
       next(e);
     }
   }
 
+  async addProductSinglePhoto(req: Request, res: Response, next: NextFunction) {
+    try {
+      console.log(req.body);
+      const product = await productService.updateProduct(+req.params.productID, req.body);
+      res.json(product);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 export const productController = new ProductController();

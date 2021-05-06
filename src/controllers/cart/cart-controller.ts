@@ -69,10 +69,12 @@ export class CartController {
   changeCountProductInCart = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const count = req.body.count;
-      const productID = req.query.productID as string;
+      // const productID = req.query.productID as string;
+      const productID = req.params.productID as string;
+
       const userCart = req.cart as CartType;
 
-      const productFromDB = await productService.getProduct(productID);
+      const productFromDB = await productService.getProduct(+productID);
 
       if (!productFromDB) {
         return next(new ErrorHandler(ResponseStatusCodeEnum.NOT_FOUND,

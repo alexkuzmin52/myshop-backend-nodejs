@@ -1,10 +1,10 @@
 import {IProduct} from '../../models';
 import {ProductModel, ProductType} from '../../database';
-// import {string} from 'joi';
 
 export class ProductService {
-  getProduct(productID: string): Promise<ProductType | null> {
-    return ProductModel.findById(productID).exec();
+  getProduct(productID: number): Promise<ProductType | null> {
+    return ProductModel.findOne({id: productID}).exec();
+
   }
 
   getProducts(): Promise<IProduct[]> {
@@ -15,12 +15,12 @@ export class ProductService {
     return new ProductModel(product).save();
   }
 
-  updateProduct(productID: string, params: Partial<IProduct>): Promise<ProductType | null> {
-    return ProductModel.findByIdAndUpdate(productID, params, {new: true}).exec();
+  updateProduct(productID: number, params: Partial<IProduct>): Promise<ProductType | null> {
+    return ProductModel.findOneAndUpdate({id: productID}, params, {new: true}).exec();
   }
 
-  deleteProduct(productID: string): Promise<any> {
-    return ProductModel.findByIdAndDelete(productID).exec();
+  deleteProduct(productID: number): Promise<any> {
+    return ProductModel.findOneAndDelete({id: productID}).exec();
   }
 
   findOneByProperty(property: Partial<IProduct>): Promise<ProductType | null> {

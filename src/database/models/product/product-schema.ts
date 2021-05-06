@@ -1,6 +1,8 @@
-import {IProduct} from '../../../models/product/product-interface';
+import {IProduct} from '../../../models';
 import {Document, Model, model, Schema, SchemaTypes} from 'mongoose';
 import {ProductTypeEnum, TableNamesEnum} from '../../../constants';
+import * as autoIncrement from 'mongoose-auto-increment';
+import * as mongoose from 'mongoose';
 
 export type ProductType = IProduct & Document;
 const dimensions = {
@@ -149,5 +151,12 @@ export const ProductSchema = new Schema<IProduct>(
   },
   {timestamps: true}
 );
+autoIncrement.initialize(mongoose.connection);
+ProductSchema.plugin(autoIncrement.plugin, {
+  model: 'ProductModel',
+  field: 'id',
+  startAt: 1,
+  incrementBy: 1
+});
 export const ProductModel: Model<ProductType> = model(TableNamesEnum.PRODUCTS, ProductSchema);
 

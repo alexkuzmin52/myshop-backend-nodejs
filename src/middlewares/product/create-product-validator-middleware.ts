@@ -3,7 +3,7 @@ import * as Joi from 'joi';
 import {createProductValidator} from '../../validators';
 import {IProduct} from '../../models';
 
-export const createProductMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const createProductValidatorMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // console.log('**************************************************************************');
   // console.log(req.body);
   const {error} = Joi.validate(req.body as IProduct, createProductValidator);
