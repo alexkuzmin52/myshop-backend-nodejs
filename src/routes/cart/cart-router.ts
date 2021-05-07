@@ -7,7 +7,7 @@ import {
   checkIsUserCartExistMiddleware
 } from '../../middlewares';
 import {cartController} from '../../controllers';
-import {CheckIsValidObjectIdMiddleware} from '../../middlewares/check-is-valid-object-id-middleware';
+// import {CheckIsValidObjectIdMiddleware} from '../../middlewares/check-is-valid-object-id-middleware';
 
 const router = Router();
 
@@ -17,8 +17,8 @@ router.get('',
   cartController.getPopulatedUserCart);
 
 router.get('/addProduct/:productID',
-  checkAccessTokenMiddleware,
-  CheckIsValidObjectIdMiddleware,
+  checkAccessTokenMiddleware, //TODO
+  // CheckIsValidObjectIdMiddleware,
   addProductToCartMiddleware,
   checkIsUserCartExistMiddleware,
   cartController.addProductToCart);

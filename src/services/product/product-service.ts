@@ -3,6 +3,8 @@ import {ProductModel, ProductType} from '../../database';
 
 export class ProductService {
   getProduct(productID: number): Promise<ProductType | null> {
+    console.log(productID);
+
     return ProductModel.findOne({id: productID}).exec();
 
   }

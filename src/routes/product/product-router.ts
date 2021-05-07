@@ -2,7 +2,7 @@ import {Router} from 'express';
 import {productController} from '../../controllers';
 import {checkAccessTokenMiddleware, checkIsProductExistMiddleware, createProductValidatorMiddleware} from '../../middlewares';
 import {checkIsProductAlreadyExistMiddleware} from '../../middlewares';
-import {uploadProduct} from "../../config/multer/product/product-multer-config";
+import {uploadProduct} from '../../config/multer/product/product-multer-config';
 
 const router = Router();
 
@@ -37,6 +37,5 @@ router.post('/addPhoto/:productID',
 //   checkIsProductExistMiddleware,
 //   uploadProduct.array('photos', 10),
 //   productController.addProductSinglePhoto)
-
 
 export const productRouter = router;

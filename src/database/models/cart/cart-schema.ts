@@ -35,6 +35,10 @@ export const CartSchema = new Schema<CartType>({
         type: Schema.Types.ObjectId,
         ref: TableNamesEnum.PRODUCTS
       },
+      id: {
+        type: Number,
+        required: true
+      },
       count: {
         type: Number,
         required: true,

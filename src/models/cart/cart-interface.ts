@@ -5,6 +5,7 @@ export interface IProductInCart {
   count: number;
   price: number;
   sumProduct: number;
+  id: number;
 }
 
 export interface ICart {
@@ -13,7 +14,8 @@ export interface ICart {
     {
       productID: string,
       count: number,
-      sumProduct: number
+      sumProduct: number,
+      id: number
     }
   ],
 

@@ -7,8 +7,8 @@ import {productService} from '../../services';
 export const addProductToCartMiddleware = async (req: IRequestExtended,
   res: Response,
   next: NextFunction): Promise<any> => {
-  const productID = req.query.productID as string;
-  const productFromDB = await productService.findByID(productID);
+  const productID = +req.params.productID;
+  const productFromDB = await productService.findOneByProperty({id: productID});
 
   if (!productFromDB) {
     return next(new ErrorHandler(ResponseStatusCodeEnum.BAD_REQUEST,
