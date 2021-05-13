@@ -6,7 +6,7 @@ export const createProductValidator = Joi.object(
     title: Joi
       .string()
       .trim()
-      .alphanum()
+      // .alphanum()
       .min(3)
       .max(50)
       .required(),
@@ -24,7 +24,7 @@ export const createProductValidator = Joi.object(
     category: Joi
       .string()
       .trim()
-      .alphanum()
+      // .alphanum()
       .min(2)
       .max(30)
       .required(),

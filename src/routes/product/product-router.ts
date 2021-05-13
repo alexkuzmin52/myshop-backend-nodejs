@@ -2,9 +2,12 @@ import {Router} from 'express';
 import {productController} from '../../controllers';
 import {checkAccessTokenMiddleware, checkIsProductExistMiddleware, createProductValidatorMiddleware} from '../../middlewares';
 import {checkIsProductAlreadyExistMiddleware} from '../../middlewares';
-import {uploadProduct} from '../../config/multer/product/product-multer-config';
+import {uploadCSVProduct, uploadProduct} from '../../config';
+// import {uploadCSVProduct} from "../../config";
 
 const router = Router();
+
+router.get('/filter', productController.getProductsByFilter);
 
 router.get('/:productID', productController.getProduct);
 router.get('/', productController.getProducts);
@@ -14,6 +17,8 @@ router.post('',
   createProductValidatorMiddleware,
   checkIsProductAlreadyExistMiddleware,
   productController.createProduct);
+
+router.post('/csv', uploadCSVProduct.single('csv_file'), productController.createProductFromCSV);
 
 router.put('/:productID',
   checkAccessTokenMiddleware,
@@ -31,6 +36,8 @@ router.post('/addPhoto/:productID',
   checkIsProductExistMiddleware,
   uploadProduct.single('photo'),
   productController.addProductSinglePhoto);
+
+// router.get('/filter', productController.getProductsByFilter);
 
 // router.post('/addPhotos/:productID',
 //   checkAccessTokenMiddleware,

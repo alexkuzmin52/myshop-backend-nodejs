@@ -129,16 +129,16 @@ export const ProductSchema = new Schema<IProduct>(
       type: Number,
       required: true
     },
-    subCategory: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    subSubCategory: {
-      type: String,
-      required: false,
-      default: ''
-    },
+    // subCategory: {
+    //   type: String,
+    //   required: false,
+    //   default: ''
+    // },
+    // subSubCategory: {
+    //   type: String,
+    //   required: false,
+    //   default: ''
+    // },
     title: {
       type: String,
       required: true,

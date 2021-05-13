@@ -1,5 +1,7 @@
-import {IProduct} from '../../models';
+import {IProduct, IProductFilter} from '../../models';
 import {ProductModel, ProductType} from '../../database';
+
+// import {Aggregate} from 'mongoose';
 
 export class ProductService {
   getProduct(productID: number): Promise<ProductType | null> {
@@ -14,6 +16,9 @@ export class ProductService {
   }
 
   createProduct(product: Partial<IProduct>): Promise<ProductType> {
+    console.log('product');
+    console.log(product);
+
     return new ProductModel(product).save();
   }
 
@@ -36,6 +41,29 @@ export class ProductService {
   findProductByID(productID: string): Promise<ProductType | null> {
     return ProductModel.findById(productID).exec();
 
+  }
+
+  // findProductsByFilter(filterQuery: Partial<IProductFilter>, limit: number, page: number): Promise<IProduct[] | []> {
+  //
+  //   const skip = limit*(page - 1);
+  //   console.log('limit***********');
+  //   console.log(limit);
+  //   console.log('page***********');
+  //   console.log(page);
+  //   console.log('skip***********');
+  //   console.log(skip);
+  //
+  //
+  //
+  //   return ProductModel.aggregate([
+  //     {$match: filterQuery}
+  //   ]).skip(skip).limit(limit).exec();
+  // }
+
+  findProductsByFilter(filterQuery: Partial<IProductFilter>, limit: number, page: number): Promise<IProduct[] | []> {
+    const skip = limit * (page - 1);
+
+    return ProductModel.find(filterQuery).skip(skip).limit(limit).exec();
   }
 }
 

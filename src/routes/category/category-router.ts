@@ -13,9 +13,10 @@ import {
   createSubSubCategoryValidatorMiddleware
 } from '../../middlewares';
 
-import {uploadCategory} from '../../config/multer/category/category-multer-config';
-import {uploadSubCategory} from '../../config/multer/category/subcategory-multer-config';
-import {uploadSubSubCategory} from '../../config/multer/category/subsubcategory-multer-config';
+import {uploadCategory} from '../../config';
+import {uploadSubCategory} from '../../config';
+import {uploadSubSubCategory} from '../../config';
+import {uploadCSV} from '../../config/multer/category/csv-multer-config';
 // import {checkIsNotExistCategoryMiddleware} from "../../middlewares/category/check-is-not-exist-category-middleware";
 
 const router = Router();
@@ -85,5 +86,10 @@ router.delete('/subcategory/:cat_id', checkAccessTokenMiddleware, checkIsSubCate
   categoryController.deleteSubCategory);
 router.delete('/subsubcategory/:cat_id', checkAccessTokenMiddleware, checkIsSubSubCategoryEmptyMiddleware,
   categoryController.deleteSubSubCategory);
+
+router.post('/csv', uploadCSV.single('csv_file'), categoryController.createCategoriesFromCSV);
+router.post('/csv/ext', uploadCSV.single('csv_file'), categoryController.createCategoriesFromCSVExt);
+router.post('/subcategory/csv', uploadCSV.single('csv_file'), categoryController.createSubCategoriesFromCSV);
+router.post('/subsubcategory/csv', uploadCSV.single('csv_file'), categoryController.createSubSubCategoriesFromCSV);
 
 export const categoryRouter = router;
