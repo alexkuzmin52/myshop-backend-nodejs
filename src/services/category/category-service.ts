@@ -83,6 +83,21 @@ export class CategoryService {
     return SubSubCategoryModel.findOne({title: titleSubSubCategory}).exec();
   }
 
+  //************************************** find By Params *********************************************
+
+  findCategoryByProperty(titleCategory: Partial<ICategory>): Promise<CategoryType | null> {
+    return CategoryModel.findOne(titleCategory).exec();
+  }
+
+  findSubCategoryByProperty(titleSubCategory: Partial<ISubCategory>): Promise<SubCategoryType | null> {
+    return SubCategoryModel.findOne(titleSubCategory).exec();
+  }
+
+  findSubSubCategoryByProperty(titleSubSubCategory: Partial<ISubSubCategory>): Promise<SubSubCategoryType | null> {
+    return SubSubCategoryModel.findOne(titleSubSubCategory).exec();
+  }
+
+
   //*************************************** Get *******************************************************
   getCategories(): Promise<ICategory[]> {
     return CategoryModel.find().exec();

@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
 import {customErrors, ErrorHandler} from '../../errors';
-import {csvParserHelper} from '../../helpers/csv-parser-helper';
+import {csvParserHelper} from '../../helpers';
 
 class CategoryController {
 // ****************************************************** create ************************************************
@@ -447,27 +447,66 @@ class CategoryController {
   }
 
   createCategoriesFromCSVExt = async (req: IRequestExtended, res: Response, next: NextFunction) => {
-    const categoryArray = await csvParserHelper('public/category/csv/Categories.csv');
-    for (const category of categoryArray) {
-      await categoryService.createCategory(category as Partial<ICategory>);
+    try {
+      const csvFilePath = 'public/category/csv/Categories.csv'
+      const categoryArray = await csvParserHelper(csvFilePath);
+
+      for (const cat of categoryArray) {
+
+        const {title} = cat as Partial<ICategory>;
+        const category = await categoryService.findCategoryByProperty({title});
+
+        if (category) {
+          return next(new ErrorHandler(
+            ResponseStatusCodeEnum.BAD_REQUEST,
+            customErrors.BAD_REQUEST_CREATE_CATEGORY.message,
+            customErrors.BAD_REQUEST_CREATE_CATEGORY.code
+          ));
+        }
+
+        await categoryService.createCategory(cat as Partial<ICategory>);
+      }
+      const allCategories = await categoryService.getCategories();
+      res.json(allCategories);
+    } catch (e) {
+      return next(e);
     }
-    const allCategories = await categoryService.getCategories();
-    res.json(allCategories);
+
   }
 
-  createSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction)=> {
+  createSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     const subCategoryArray = await csvParserHelper('public/category/csv/SubCategories.csv');
-    for (const category of subCategoryArray) {
-      await categoryService.createSubCategory(category as Partial<ISubCategory>);
+    for (const cat of subCategoryArray) {
+      const {title} = cat as Partial<ISubCategory>;
+      const subcategory = await categoryService.findSubCategoryByProperty({title});
+
+      if (subcategory) {
+        return next(new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_CREATE_SUB_CATEGORY.message,
+          customErrors.BAD_REQUEST_CREATE_SUB_CATEGORY.code
+        ));
+      }
+
+      await categoryService.createSubCategory(cat as Partial<ISubCategory>);
     }
     const allSubCategories = await categoryService.getSubCategories();
     res.json(allSubCategories);
   }
 
-  createSubSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction)=> {
+  createSubSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     const subSubCategoryArray = await csvParserHelper('public/category/csv/SubSubCategories.csv');
-    for (const category of subSubCategoryArray) {
-      await categoryService.createSubSubCategory(category as Partial<ISubSubCategory>);
+    for (const cat of subSubCategoryArray) {
+      const {title} = cat as Partial<ISubSubCategory>;
+      const subSubcategory = await categoryService.findSubSubCategoryByProperty({title});
+      if (subSubcategory) {
+        return next(new ErrorHandler(
+          ResponseStatusCodeEnum.BAD_REQUEST,
+          customErrors.BAD_REQUEST_CREATE_SUB_SUB_CATEGORY.message,
+          customErrors.BAD_REQUEST_CREATE_SUB_SUB_CATEGORY.code));
+      }
+
+      await categoryService.createSubSubCategory(cat as Partial<ISubSubCategory>);
     }
     const allSubSubCategories = await categoryService.getSubSubCategories();
     res.json(allSubSubCategories);
