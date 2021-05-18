@@ -97,7 +97,6 @@ export class CategoryService {
     return SubSubCategoryModel.findOne(titleSubSubCategory).exec();
   }
 
-
   //*************************************** Get *******************************************************
   getCategories(): Promise<ICategory[]> {
     return CategoryModel.find().exec();

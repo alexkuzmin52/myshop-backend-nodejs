@@ -10,7 +10,7 @@ import {csvParserHelper, ProductQueryBuilder} from '../../helpers';
 
 export class ProductController {
   async getProducts(req: Request, res: Response, next: NextFunction) {
-
+    console.log(req.ip);
     try {
       const allProducts = await productService.getProducts();
       res.json(allProducts);

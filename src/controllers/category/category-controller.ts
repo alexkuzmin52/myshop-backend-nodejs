@@ -448,7 +448,7 @@ class CategoryController {
 
   createCategoriesFromCSVExt = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
-      const csvFilePath = 'public/category/csv/Categories.csv'
+      const csvFilePath = 'public/category/csv/Categories.csv';
       const categoryArray = await csvParserHelper(csvFilePath);
 
       for (const cat of categoryArray) {
