@@ -1,7 +1,8 @@
-import {OrderStatusEnum} from '../../constants';
 import {OrderDeliveryEnum} from '../../constants';
 import {OrderPaymentMethodEnum} from '../../constants';
+import {OrderStatusEnum} from '../../constants';
 
+//TODO
 export interface ICustomer {
   name: string,
   surname: string,

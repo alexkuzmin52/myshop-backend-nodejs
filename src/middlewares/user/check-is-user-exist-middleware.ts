@@ -1,9 +1,9 @@
 import {NextFunction, Response} from 'express';
 
 import {IRequestExtended, IUser} from '../../models';
-import {userService} from '../../services';
-import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constants';
+import {customErrors, ErrorHandler} from '../../errors';
+import {userService} from '../../services';
 
 export const checkIsUserExistMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<void> => {
   const {email} = req.body as Partial<IUser>;

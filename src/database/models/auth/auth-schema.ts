@@ -1,5 +1,6 @@
-import {IAuth} from '../../../models';
 import {Document, Model, model, Schema} from 'mongoose';
+
+import {IAuth} from '../../../models';
 import {TableNamesEnum} from '../../../constants';
 
 export type AuthType = IAuth & Document;

@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+
 import {RegexEnum} from '../../constants';
 
 export const createCategoryValidator = Joi.object({

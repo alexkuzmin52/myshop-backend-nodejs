@@ -1,8 +1,8 @@
 import {Types} from 'mongoose';
 
+import {ActionEnum} from '../../constants';
 import {IUser, IUserToken} from '../../models';
 import {UserModel, UserType} from '../../database';
-import {ActionEnum} from '../../constants';
 
 export class UserService {
   createUser(user: Partial<IUser>): Promise<UserType> {
@@ -35,7 +35,7 @@ export class UserService {
       ]
     }).exec();
   }
-
+  //TODO
   UpdateUserByPropertyOld(id: Partial<IUser>, property: Partial<IUser>): Promise<UserType> {
     return UserModel.updateOne(
       id,
@@ -52,16 +52,6 @@ export class UserService {
       {new: true}
     ).exec();
   }
-
-  //Рабочий вариант
-  // updateUserById(id: Partial<IUser>, update: any): Promise<UserType | null> {
-  //   return UserModel.findByIdAndUpdate(
-  //     id,
-  //     {
-  //       tokens: update
-  //     }
-  //   ).exec();
-  // }
 
 }
 

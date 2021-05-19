@@ -1,12 +1,14 @@
 import {Router} from 'express';
+
 import {orderController} from '../../controllers';
 import {
-  checkAccessTokenMiddleware, checkIsUserCartExistMiddleware, CheckIsUserOrderExistMiddleware,
-  // CheckIsUserOrderExistMiddleware,
+  checkAccessTokenMiddleware,
+  CheckIsEnoughProductsInStock,
+  CheckIsOrderWithStatusRegisteredExistMiddleware,
+  checkIsUserCartExistMiddleware,
+  CheckIsUserOrderExistMiddleware,
   ConfirmOrderValidatorMiddleware
 } from '../../middlewares';
-import {CheckIsEnoughProductsInStock} from '../../middlewares';
-import {CheckIsOrderWithStatusRegisteredExistMiddleware} from '../../middlewares';
 
 const router = Router();
 

@@ -6,10 +6,11 @@ import {
   confirmUserMiddleware,
   createUserMiddleware,
   emailValidatorMiddleware, forgotUserMiddleware, passwordValidatorMiddleware
-} from '../../middlewares/user';
-import {upload} from '../../config';
+} from '../../middlewares';
+import {upload} from '../../config'; //TODO uploadUser?
 
 const router = Router();
+
 router.post('/',upload.single('photo'), createUserMiddleware, checkIsEmailAlreadyExistMiddleware, userController.createUser);
 router.post('/confirm', confirmUserMiddleware, userController.confirmUser);
 router.post('/password/forgot', emailValidatorMiddleware, checkIsUserExistMiddleware, userController.forgotPassword);

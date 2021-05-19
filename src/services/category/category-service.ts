@@ -6,7 +6,6 @@ import {
   SubSubCategoryModel,
   SubSubCategoryType
 } from '../../database';
-
 import {ICategory, ISubCategory, ISubSubCategory} from '../../models';
 
 export class CategoryService {
@@ -136,11 +135,9 @@ export class CategoryService {
   }
 
   removeSubSubCategory(idSubSubCategory: Partial<ISubSubCategory>): Promise<{ deletedCount?: number }> {
-    // console.log(subcategoryID);
-
     return SubSubCategoryModel.deleteOne(idSubSubCategory).exec();
   }
-
+  //TODO
   //  Sub Category========================================================================
   removeOneSubCategory(idSubCategory: Partial<ISubCategory>): Promise<{ deletedCount?: number }> {
     return SubCategoryModel.deleteOne(idSubCategory).exec();
@@ -183,7 +180,6 @@ export class CategoryService {
   //******************************** Update *********************************************
   // Category============================================================================
   updateCategory(idCategory: Partial<ICategory>, params: Partial<ICategory>): Promise<CategoryType | null> {
-    // return CategoryModel.findByIdAndUpdate(idCategory, params, {new: true}).exec();
     return CategoryModel.findOneAndUpdate({id: idCategory}, params, {new: true}).exec();
 
   }
@@ -212,12 +208,9 @@ export class CategoryService {
     return CategoryModel.findOne({id: parentID}).exec();
   }
 
-  // getCategory(categoryID: number): Promise<CategoryType | null> {
-  //   return CategoryModel.findOne({id: categoryID}).exec();
-  // }
-
   updateCategoryBySubCategory(category: CategoryType, subcategory: ISubCategory): Promise<CategoryType | null> {
     const index = category.subCategories.findIndex(value => value.id === subcategory.id);
+
     if (index !== -1) {
       category.subCategories[index] = subcategory;
     }
@@ -228,23 +221,13 @@ export class CategoryService {
   updateSubCategoryBySubSubCategory(subcategory: SubCategoryType,
     subsubcategory: SubSubCategoryType): Promise<SubCategoryType | null> {
     const index = subcategory?.subSubCategories.findIndex((value => value.id === subsubcategory?.id));
+
     if (index !== -1) {
       subcategory.subSubCategories[index] = subsubcategory;
     }
 
     return subcategory.save();
   }
-
-  // addCategoryLogo(categoryID: Partial<ICategory>) {
-  //   return CategoryModel.findByIdAndUpdate(categoryID) {
-  //
-  //   }
-  // }
-
-  // deleteSubCategoryFromCategory(id: ISubCategory): Promise<CategoryType |null> {
-  //
-  //
-  // }
 }
 
 export const categoryService = new CategoryService();

@@ -1,10 +1,13 @@
-import {IProduct} from '../../../models';
-import {Document, Model, model, Schema, SchemaTypes} from 'mongoose';
-import {ProductTypeEnum, TableNamesEnum} from '../../../constants';
 import * as autoIncrement from 'mongoose-auto-increment';
 import * as mongoose from 'mongoose';
+import {Document, Model, model, Schema, SchemaTypes} from 'mongoose';
+
+import {IProduct} from '../../../models';
+import {ProductTypeEnum, TableNamesEnum} from '../../../constants';
+import {config} from '../../../config';
 
 export type ProductType = IProduct & Document;
+
 const dimensions = {
   length: Number,
   width: Number,
@@ -129,16 +132,6 @@ export const ProductSchema = new Schema<IProduct>(
       type: Number,
       required: true
     },
-    // subCategory: {
-    //   type: String,
-    //   required: false,
-    //   default: ''
-    // },
-    // subSubCategory: {
-    //   type: String,
-    //   required: false,
-    //   default: ''
-    // },
     title: {
       type: String,
       required: true,
@@ -151,11 +144,13 @@ export const ProductSchema = new Schema<IProduct>(
   },
   {timestamps: true}
 );
+
 autoIncrement.initialize(mongoose.connection);
+
 ProductSchema.plugin(autoIncrement.plugin, {
   model: 'ProductModel',
   field: 'id',
-  startAt: 1,
+  startAt: config.START_NUMBER_PRODUCT_ID,
   incrementBy: 1
 });
 export const ProductModel: Model<ProductType> = model(TableNamesEnum.PRODUCTS, ProductSchema);

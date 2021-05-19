@@ -1,11 +1,11 @@
 import {NextFunction, Response} from 'express';
 
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
+import {CartType} from '../../database';
 import {ICart, IProduct, IRequestExtended, IUser} from '../../models';
 import {cartService, logService, productService} from '../../services';
 import {customErrors, ErrorHandler} from '../../errors';
 import {sumCartHelper} from '../../helpers';
-import {CartType} from '../../database';
 
 export class CartController {
   addProductToCart = async (req: IRequestExtended, res: Response, next: NextFunction) => {
@@ -24,7 +24,6 @@ export class CartController {
       }
 
       userCart.products.push({productID: productToCart._id, count: 1, sumProduct: productToCart.price, id: productToCart.id});
-
       userCart.amount += 1;
       userCart.sum = sumCartHelper(userCart);
 
@@ -45,8 +44,6 @@ export class CartController {
       const productID = +req.params.productID;
       const {_id} = req.user as IUser;
       const userCart = req.cart as CartType;
-
-      // const index = userCart.products.findIndex((v) => v.productID.toString() === productID);
       const index = userCart.products.findIndex((v) => v.id === productID);
 
       if (index === -1) {
@@ -70,16 +67,10 @@ export class CartController {
   changeCountProductInCart = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const count = req.body.count;
-      // const productID = req.query.productID as string;
       const productID = +req.params.productID;
-
       const userCart = req.cart as CartType;
-
       const productFromDB = await productService.getProduct(productID);
-      // console.log('productFromDB+++++++++');
-      // console.log(productFromDB);
-      // console.log('userCart.products888888888888888888888888');
-      // console.log(userCart.products);
+
       if (!productFromDB) {
         return next(new ErrorHandler(ResponseStatusCodeEnum.NOT_FOUND,
           customErrors.BAD_REQUEST_UPDATE_PRODUCT_IN_CART_NOT_FOUND_PRODUCT_FROM_DB.message,
@@ -90,7 +81,6 @@ export class CartController {
         return next(new Error(`Remaining products in stock ${productFromDB.stockCount} unit`));
       }
 
-      // const index = userCart.products.findIndex(value => value.productID.toString() === productID);
       const index = userCart.products.findIndex(value => value.id === productID);
 
       if (index === -1) {

@@ -1,5 +1,5 @@
-import {IAuth} from '../../models';
 import {AuthModel, AuthType} from '../../database';
+import {IAuth} from '../../models';
 
 class AuthService {
   createTokenPair = (tokenObject: Partial<IAuth>): Promise<IAuth> => {

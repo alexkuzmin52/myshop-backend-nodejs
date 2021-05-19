@@ -1,9 +1,9 @@
 import {NextFunction, Response} from 'express';
 
 import {IRequestExtended, ISubCategory} from '../../models';
+import {ResponseStatusCodeEnum} from '../../constants';
 import {categoryService} from '../../services';
 import {customErrors, ErrorHandler} from '../../errors';
-import {ResponseStatusCodeEnum} from '../../constants';
 
 export const checkIsExistSubCategoryMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<void> => {
   const subTitle = req.body.title as Partial<ISubCategory>;

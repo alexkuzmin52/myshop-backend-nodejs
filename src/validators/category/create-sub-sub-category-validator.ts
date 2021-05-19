@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+
 import {RegexEnum} from '../../constants';
 
 export const createSubSubCategoryValidator = Joi.object({
@@ -10,8 +11,4 @@ export const createSubSubCategoryValidator = Joi.object({
   overview_url: Joi
     .string()
     .regex(RegexEnum.url)
-  // parentID: Joi
-  //   .number()
-  // .required()
-
 });

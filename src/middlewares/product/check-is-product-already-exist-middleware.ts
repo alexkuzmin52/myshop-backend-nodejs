@@ -1,11 +1,16 @@
 import {NextFunction, Response} from 'express';
+
 import {IProduct, IRequestExtended} from '../../models';
-import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constants';
+import {customErrors, ErrorHandler} from '../../errors';
 import {productService} from '../../services';
 
-export const checkIsProductAlreadyExistMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<any> => {
+export const checkIsProductAlreadyExistMiddleware = async (
+  req: IRequestExtended,
+  res: Response,
+  next: NextFunction): Promise<any> => {
   const {title} = req.body as IProduct;
+
   const productByTitle = await productService.findOneByProperty({title});
 
   if (productByTitle) {
@@ -15,5 +20,6 @@ export const checkIsProductAlreadyExistMiddleware = async (req: IRequestExtended
       customErrors.BAD_REQUEST_PRODUCT_TITLE.code
     ));
   }
+
   next();
 };

@@ -1,14 +1,15 @@
 import {Router} from 'express';
+
 import {productController} from '../../controllers';
-import {checkAccessTokenMiddleware, checkIsProductExistMiddleware, createProductValidatorMiddleware} from '../../middlewares';
-import {checkIsProductAlreadyExistMiddleware} from '../../middlewares';
+import {checkAccessTokenMiddleware,
+  checkIsProductAlreadyExistMiddleware,
+  checkIsProductExistMiddleware,
+  createProductValidatorMiddleware} from '../../middlewares';
 import {uploadCSVProduct, uploadProduct} from '../../config';
-// import {uploadCSVProduct} from "../../config";
 
 const router = Router();
 
 router.get('/filter', productController.getProductsByFilter);
-
 router.get('/:productID', productController.getProduct);
 router.get('/', productController.getProducts);
 
@@ -37,8 +38,7 @@ router.post('/addPhoto/:productID',
   uploadProduct.single('photo'),
   productController.addProductSinglePhoto);
 
-// router.get('/filter', productController.getProductsByFilter);
-
+//TODO
 // router.post('/addPhotos/:productID',
 //   checkAccessTokenMiddleware,
 //   checkIsProductExistMiddleware,

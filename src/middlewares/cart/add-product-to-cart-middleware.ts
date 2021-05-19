@@ -1,10 +1,12 @@
-import {IRequestExtended} from '../../models';
 import {NextFunction, Response} from 'express';
-import {customErrors, ErrorHandler} from '../../errors';
+
+import {IRequestExtended} from '../../models';
 import {ResponseStatusCodeEnum} from '../../constants';
+import {customErrors, ErrorHandler} from '../../errors';
 import {productService} from '../../services';
 
-export const addProductToCartMiddleware = async (req: IRequestExtended,
+export const addProductToCartMiddleware = async (
+  req: IRequestExtended,
   res: Response,
   next: NextFunction): Promise<any> => {
   const productID = +req.params.productID;

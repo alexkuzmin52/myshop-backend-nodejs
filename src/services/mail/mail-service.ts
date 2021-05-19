@@ -1,11 +1,11 @@
-import * as nodemailer from 'nodemailer';
 import * as EmailTemplates from 'email-templates';
+import * as nodemailer from 'nodemailer';
 import * as path from 'path';
 
-import {config} from '../../config';
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
-import {htmlTemplates} from '../../email-templates';
 import {ErrorHandler} from '../../errors';
+import {config} from '../../config';
+import {htmlTemplates} from '../../email-templates';
 
 if (
   !config.FRONTEND_URL
@@ -15,6 +15,7 @@ if (
 ) {
   throw Error('Root email credentials are not defined!');
 }
+
 const contextExtension = {
   frontendUrl: config.FRONTEND_URL
 };
@@ -41,10 +42,7 @@ const emailTemplates = new EmailTemplates(
 export class MailService {
   async sendEmail(email: string, action: ActionEnum, context: any = {}): Promise<void> {
     const templateInfo = htmlTemplates[action];
-    console.log('email');
-    console.log(email);
-    console.log('action');
-    console.log(action);
+
     if (!templateInfo) {
       throw new ErrorHandler(ResponseStatusCodeEnum.SERVER, 'Template not found (');
     }

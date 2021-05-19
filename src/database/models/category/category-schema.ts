@@ -5,13 +5,14 @@ import {Document, Model, model, Schema} from 'mongoose';
 import {ICategory} from '../../../models';
 import {TableNamesEnum} from '../../../constants';
 import {SubCategorySchema} from './subcategory-schema';
+import {config} from '../../../config';
 
 export type CategoryType = ICategory & Document;
+
 export const CategorySchema = new Schema<ICategory>({
   id: {
     type: Number,
     required: true
-    // unique: true
   },
   title: {
     type: String,
@@ -38,7 +39,7 @@ autoIncrement.initialize(mongoose.connection);
 CategorySchema.plugin(autoIncrement.plugin, {
   model: 'CategoryModel',
   field: 'id',
-  startAt: 1000,
+  startAt: config.START_NUMBER_CATEGORY_ID,
   incrementBy: 1
 });
 

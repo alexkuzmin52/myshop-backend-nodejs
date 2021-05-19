@@ -12,12 +12,7 @@ import {
   createSubCategoryValidatorMiddleware,
   createSubSubCategoryValidatorMiddleware
 } from '../../middlewares';
-
-import {uploadCategory} from '../../config';
-import {uploadSubCategory} from '../../config';
-import {uploadSubSubCategory} from '../../config';
-import {uploadCSV} from '../../config/multer/category/csv-multer-config';
-// import {checkIsNotExistCategoryMiddleware} from "../../middlewares/category/check-is-not-exist-category-middleware";
+import {uploadCategory, uploadCSV, uploadSubCategory, uploadSubSubCategory} from '../../config';
 
 const router = Router();
 
@@ -80,6 +75,7 @@ router.put('/:cat_id', checkAccessTokenMiddleware, categoryController.updateCate
 router.put('/subcategory/:cat_id', checkAccessTokenMiddleware, categoryController.updateSubCategory);
 router.put('/subsubcategory/:cat_id', checkAccessTokenMiddleware, categoryController.updateSubSubCategory);
 
+//TODO check is product link exist
 router.delete('/:cat_id', checkAccessTokenMiddleware, checkIsCategoryEmptyMiddleware,
   categoryController.DeleteCategory);
 router.delete('/subcategory/:cat_id', checkAccessTokenMiddleware, checkIsSubCategoryEmptyMiddleware,

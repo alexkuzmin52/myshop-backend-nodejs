@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+
 import {ProductTypeEnum} from '../../constants';
 
 export const createProductValidator = Joi.object(
@@ -116,18 +117,6 @@ export const createProductValidator = Joi.object(
       .integer()
       .min(1)
       .max(9999)
-      .required(),
-    subCategory: Joi
-      .string()
-      .trim()
-      .alphanum()
-      .min(2)
-      .max(30),
-    subSubCategory: Joi
-      .string()
-      .trim()
-      .alphanum()
-      .min(2)
-      .max(30)
+      .required()
   }
 );

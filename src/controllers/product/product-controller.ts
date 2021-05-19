@@ -1,16 +1,13 @@
 import {NextFunction, Request, Response} from 'express';
 
-import {logService, productService} from '../../services';
-import {IProduct, IProductFilterQuery, IRequestExtended, IUser} from '../../models';
-import {customErrors, ErrorHandler} from '../../errors';
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
+import {IProduct, IProductFilterQuery, IRequestExtended, IUser} from '../../models';
 import {csvParserHelper, ProductQueryBuilder} from '../../helpers';
-
-// import {csvParserHelper} from "../../helpers";
+import {customErrors, ErrorHandler} from '../../errors';
+import {logService, productService} from '../../services';
 
 export class ProductController {
-  async getProducts(req: Request, res: Response, next: NextFunction) {
-    console.log(req.ip);
+  getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const allProducts = await productService.getProducts();
       res.json(allProducts);
@@ -19,7 +16,7 @@ export class ProductController {
     }
   }
 
-  async getProduct(req: Request, res: Response, next: NextFunction) {
+  getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const product = await productService.getProduct(+req.params.productID);
 
@@ -34,20 +31,20 @@ export class ProductController {
     }
   }
 
-  async createProduct(req: IRequestExtended, res: Response, next: NextFunction) {
+  createProduct = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const {_id} = req.user as IUser;
-      // console.log(req.body);
       const newProduct = await productService.createProduct({...req.body, userID: _id});
 
       await logService.createLog({event: ActionEnum.USER_CREATE_PRODUCT, userId: _id, data: newProduct._id});
+
       res.json(newProduct);
     } catch (e) {
       next(e);
     }
   }
 
-  async updateProduct(req: IRequestExtended, res: Response, next: NextFunction) {
+  updateProduct = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const {_id} = req.user as IUser;
       const updatedProduct = await productService.updateProduct(+req.params.productID, req.body);
@@ -55,13 +52,14 @@ export class ProductController {
       if (updatedProduct) {
         await logService.createLog({event: ActionEnum.USER_UPDATE_PRODUCT, userId: _id, data: updatedProduct._id});
       }
+
       res.json(updatedProduct);
     } catch (e) {
       next(e);
     }
   }
 
-  async deleteProduct(req: Request, res: Response, next: NextFunction) {
+  deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const deletedProduct = await productService.deleteProduct(+req.params.productID);
 
@@ -71,10 +69,10 @@ export class ProductController {
     }
   }
 
-  async addProductSinglePhoto(req: Request, res: Response, next: NextFunction) {
+  addProductSinglePhoto = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(req.body);
       const product = await productService.updateProduct(+req.params.productID, req.body);
+
       res.json(product);
     } catch (e) {
       next(e);
@@ -89,26 +87,18 @@ export class ProductController {
       if (!req.query.page) {
         req.query.page = '1';
       }
-      // const limit = req.query.limit?req.query.limit:'20';
-      // const page = req.query.page?req.query.page:'1';
-      // const {limit=1, page=1} =req.query;
-      // let limit:string
-      // req.query.limit?limit=req.query.limit:limit=20
-      // const limit = req.query.limit;
-      // const page = req.query.page;
 
-      console.log('filter****************');
-      console.log(req.query);
       const filterQuery = ProductQueryBuilder(req.query as Partial<IProductFilterQuery>);
-      console.log('filterQuery$$$$$$$$$$');
-      console.log(filterQuery);
+
       const products = await productService.findProductsByFilter(filterQuery, +req.query.limit, +req.query.page);
+
       if (products.length) {
         res.json(products);
       } else {
         return next(new ErrorHandler(ResponseStatusCodeEnum.NOT_FOUND,
           customErrors.NOT_FOUND.message));
       }
+
     } catch (e) {
       next(e);
     }
@@ -130,14 +120,15 @@ export class ProductController {
             customErrors.BAD_REQUEST_PRODUCT_TITLE.code
           ));
         }
+
         await productService.createProduct(product as Partial<IProduct>);
       }
+
       const products = await productService.getProducts();
       res.json(products);
     } catch (e) {
       return next(e);
     }
-
   }
 }
 

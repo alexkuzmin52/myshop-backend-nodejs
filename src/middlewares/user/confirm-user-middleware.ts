@@ -1,10 +1,10 @@
 import {NextFunction, Response} from 'express';
 
 import {ActionEnum, HeaderRequestEnum, ResponseStatusCodeEnum} from '../../constants';
+import {IRequestExtended} from '../../models';
 import {customErrors, ErrorHandler} from '../../errors';
 import {tokenVerificator} from '../../helpers';
 import {userService} from '../../services';
-import {IRequestExtended} from '../../models';
 
 export const confirmUserMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<void> => {
   try {

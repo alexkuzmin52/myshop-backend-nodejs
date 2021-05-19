@@ -9,6 +9,7 @@ import {
 import {authController} from '../../controllers';
 
 const router = Router();
+
 router.post('/login',
   emailAndPasswordValidatorMiddleware,
   checkIsUserExistMiddleware,

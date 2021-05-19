@@ -1,33 +1,11 @@
 import {Document, Model, model, Schema} from 'mongoose';
-import {ICart} from '../../../models';
+
 import {CartStatusEnum, TableNamesEnum} from '../../../constants';
+import {ICart} from '../../../models';
 
 export type CartType = ICart & Document;
 
-// const productInCart = {
-//   productID: {
-//     type: Schema.Types.ObjectId,
-//     ref: TableNamesEnum.PRODUCTS
-//     // required: true
-//   },
-//   count: {
-//     type: Number,
-//     required: true,
-//     default:0
-//   },
-//   price: {
-//     type: Number,
-//     required: true,
-//     default:0
-//   },
-//   sumProduct: {
-//     type: Number,
-//     required: true,
-//     default:0
-//   }
-// };
 export const CartSchema = new Schema<CartType>({
-  // products: [productInCart],
   products: [
     {
       _id: false,

@@ -1,12 +1,16 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {IUser} from '../../models';
-import {userService} from '../../services';
-import {customErrors, ErrorHandler} from '../../errors';
 import {ResponseStatusCodeEnum} from '../../constants';
+import {customErrors, ErrorHandler} from '../../errors';
+import {userService} from '../../services';
 
-export const checkIsEmailAlreadyExistMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const checkIsEmailAlreadyExistMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction): Promise<any> => {
   const {email} = req.body as IUser;
+
   const userByEmail = await userService.findOneByProperty({email});
 
   if (userByEmail) {

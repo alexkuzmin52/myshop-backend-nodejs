@@ -1,13 +1,14 @@
 import {NextFunction, Response} from 'express';
 
 import {IRequestExtended} from '../../models';
+import {ResponseStatusCodeEnum} from '../../constants';
 import {categoryService} from '../../services';
 import {customErrors, ErrorHandler} from '../../errors';
-import {ResponseStatusCodeEnum} from '../../constants';
 
 export const checkIsCategoryEmptyMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<void> => {
 
   const category = await categoryService.getCategoryByParams({id: +req.params.cat_id});
+
   if (!category) {
     return next(new ErrorHandler(
       ResponseStatusCodeEnum.NOT_FOUND,

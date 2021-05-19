@@ -1,14 +1,14 @@
 import {NextFunction, Request, Response} from 'express';
 import * as csv from 'csvtojson';
-
-import {categoryService, logService} from '../../services';
-import {ICategory, IRequestExtended, ISubCategory, ISubSubCategory} from '../../models';
-import {CategoryType, SubCategoryType, SubSubCategoryType} from '../../database';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
-import {customErrors, ErrorHandler} from '../../errors';
+import {CategoryType, SubCategoryType, SubSubCategoryType} from '../../database';
+import {ICategory, IRequestExtended, ISubCategory, ISubSubCategory} from '../../models';
+import {categoryService, logService} from '../../services';
 import {csvParserHelper} from '../../helpers';
+import {customErrors, ErrorHandler} from '../../errors';
 
 class CategoryController {
 // ****************************************************** create ************************************************
@@ -16,11 +16,13 @@ class CategoryController {
     try {
       const newCategory = await categoryService.createCategory(req.body as Partial<ICategory>);
       const resCategory = await categoryService.getResCategory(newCategory.id);
+
       await logService.createLog({
         event: ActionEnum.CATEGORY_CREATE,
         userId: req.user?._id, data:
           {id: newCategory._id, title: newCategory.title}
       });
+
       res.json(resCategory);
     } catch (e) {
       next(e);
@@ -61,13 +63,13 @@ class CategoryController {
   addSubCategory = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const {idCat} = req.body;
-      console.log(idCat);
       const sub = req.subcategory as SubCategoryType;
       sub.parentID = idCat;
+
       await sub.save();
       const updatedCategory = await categoryService.addSubCategoryToCategory(idCat, sub);
-
       await logService.createLog({event: ActionEnum.ADD_SUB_CATEGORY, userId: req.user?._id, data: sub.id});
+
       res.json(updatedCategory);
 
     } catch (e) {
@@ -79,21 +81,20 @@ class CategoryController {
     try {
       const subsub = req.subsubcategory as SubSubCategoryType;
       subsub.parentID = req.body.idSubCat;
-      await subsub.save();
 
+      await subsub.save();
       const updatedSubCategory = await categoryService.addSubSubCategoryToSubCategory(req.body.idSubCat, subsub);
 
       if (updatedSubCategory) {
         const category = await categoryService.getCategoryByID(updatedSubCategory.parentID);
         if (category) {
           const updatedCategory = await categoryService.updateCategoryBySubCategory(category, updatedSubCategory);
-
           await logService.createLog({event: ActionEnum.ADD_SUB_SUB_CATEGORY, userId: req.user?._id, data: subsub.id});
+
           res.json(updatedCategory);
         }
       }
       res.json(updatedSubCategory);
-      // else {res.json({error: 'Unknown error'});}
 
     } catch (e) {
       return next(e);
@@ -178,14 +179,14 @@ class CategoryController {
   }
 
   //get SubSubCategory by its title
-  async GetSubSubCategory(req: Request, res: Response, next: NextFunction) {
-    try {
-      const subsubcategory = await categoryService.getSubSubCategoryByParams({id: +req.params.cat_id});
-      res.json(subsubcategory);
-    } catch (e) {
-      next(e);
-    }
-  }
+   GetSubSubCategory = async (req: Request, res: Response, next: NextFunction) => {
+     try {
+       const subsubcategory = await categoryService.getSubSubCategoryByParams({id: +req.params.cat_id});
+       res.json(subsubcategory);
+     } catch (e) {
+       next(e);
+     }
+   }
 
   // ****************************************************** delete ************************************************
   // delete Category===============================================================================================
@@ -225,228 +226,146 @@ class CategoryController {
 
   // ****************************************************** update ************************************************
 
-  async updateCategory(req: Request, res: Response, next: NextFunction) {
-    try {
-      const updatedCategory = await categoryService.updateCategory(+req.params.cat_id as Partial<ICategory>, req.body);
-      res.json(updatedCategory);
-    } catch (e) {
-      next(e);
-    }
-  }
+   updateCategory = async (req: Request, res: Response, next: NextFunction) => {
+     try {
+       const updatedCategory = await categoryService.updateCategory(+req.params.cat_id as Partial<ICategory>, req.body);
+       res.json(updatedCategory);
 
-  async updateSubCategory(req: IRequestExtended, res: Response, next: NextFunction) {
-    try {
+     } catch (e) {
+       next(e);
+     }
+   }
 
-      const sub_id = +req.params.cat_id as Partial<ISubCategory>;
-      const sub = req.body;
-      const updatedSubCategory = await categoryService.updateSubCategory(sub_id, sub);
-      const cat = await categoryService.getCategory(updatedSubCategory?.parentID as Partial<ICategory>);
-      const updatedCategory = await categoryService.updateCategoryBySubCategory(cat as CategoryType, updatedSubCategory as ISubCategory);
+   updateSubCategory = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+     try {
+       const sub_id = +req.params.cat_id as Partial<ISubCategory>;
+       const sub = req.body;
+       const updatedSubCategory = await categoryService.updateSubCategory(sub_id, sub);
+       const cat = await categoryService.getCategory(updatedSubCategory?.parentID as Partial<ICategory>);
+       const updatedCategory = await categoryService.updateCategoryBySubCategory(cat as CategoryType, updatedSubCategory as ISubCategory);
 
-      await logService.createLog({event: ActionEnum.ADD_SUB_SUB_CATEGORY, userId: req.user?._id, data: sub_id});
+       await logService.createLog({event: ActionEnum.ADD_SUB_SUB_CATEGORY, userId: req.user?._id, data: sub_id});
 
-      res.json(updatedCategory);
+       res.json(updatedCategory);
 
-    } catch (e) {
-      next(e);
-    }
-  }
+     } catch (e) {
+       next(e);
+     }
+   }
 
-  async updateSubSubCategory(req: IRequestExtended, res: Response, next: NextFunction) {
-    try {
-      const sub_sub_id = +req.params.cat_id as Partial<ISubSubCategory>;
-      const subsub = req.body;
+   updateSubSubCategory = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+     try {
+       const sub_sub_id = +req.params.cat_id as Partial<ISubSubCategory>;
+       const subsub = req.body;
 
-      const updatedSubSubCategory = await categoryService.updateSubSubCategory(sub_sub_id, subsub);
-      const sub = await categoryService.getSubCategory(updatedSubSubCategory?.parentID as Partial<ISubSubCategory>);
-      const updatedSubCategory = await categoryService.updateSubCategoryBySubSubCategory(sub as SubCategoryType,
+       const updatedSubSubCategory = await categoryService.updateSubSubCategory(sub_sub_id, subsub);
+       const sub = await categoryService.getSubCategory(updatedSubSubCategory?.parentID as Partial<ISubSubCategory>);
+       const updatedSubCategory = await categoryService.updateSubCategoryBySubSubCategory(sub as SubCategoryType,
         updatedSubSubCategory as SubSubCategoryType);
-      const cat = await categoryService.getCategory(updatedSubCategory?.parentID as Partial<ICategory>);
-      const updatedCategory = await categoryService.updateCategoryBySubCategory(cat as CategoryType,
+       const cat = await categoryService.getCategory(updatedSubCategory?.parentID as Partial<ICategory>);
+       const updatedCategory = await categoryService.updateCategoryBySubCategory(cat as CategoryType,
         updatedSubCategory as ISubCategory);
-      await logService.createLog({event: ActionEnum.ADD_SUB_CATEGORY, userId: req.user?._id, data: sub_sub_id});
-      res.json(updatedCategory);
+       await logService.createLog({event: ActionEnum.ADD_SUB_CATEGORY, userId: req.user?._id, data: sub_sub_id});
+       res.json(updatedCategory);
 
-    } catch (e) {
-      next(e);
-    }
-  }
+     } catch (e) {
+       next(e);
+     }
+   }
 
-  // async addCategoryLogo(req: Request, res: Response, next: NextFunction) {
-  //   const categoryID = req.body as Partial<ICategory>;
-  //   const cat = await categoryService.addCategoryLogo(categoryID);
-  // }
-  async getLogo(req: Request, res: Response, next: NextFunction) {
-    // const mime = {
-    //   'html': 'text/html',
-    //   'txt': 'text/plain',
-    //   'css': 'text/css',
-    //   'gif': 'image/gif',
-    //   'jpg': 'image/jpeg',
-    //   'png': 'image/png',
-    //   'svg': 'image/svg+xml',
-    //   'js': 'application/javascript'
-    // };
+   async getLogo(req: Request, res: Response, next: NextFunction) {
+     // const mime = {
+     //   'html': 'text/html',
+     //   'txt': 'text/plain',
+     //   'css': 'text/css',
+     //   'gif': 'image/gif',
+     //   'jpg': 'image/jpeg',
+     //   'png': 'image/png',
+     //   'svg': 'image/svg+xml',
+     //   'js': 'application/javascript'
+     // };
 
-    const pathFile = path.resolve(process.cwd(), 'public/category/');
-    // console.log((global as any).appRoot);
+     const pathFile = path.resolve(process.cwd(), 'public/category/');
 
-    console.log(pathFile);
-    // console.log(req);
-    console.log(req.params);
-    // await res.end();
+     const category = await categoryService.getCategory(req.params.cat_id as Partial<ICategory>);
 
-    const category = await categoryService.getCategory(req.params.cat_id as Partial<ICategory>);
-    console.log(category?.logo);
-    const loadingFilePath = pathFile + `/${category?.logo}`;
-    console.log(loadingFilePath);
+     const loadingFilePath = pathFile + `/${category?.logo}`;
+     const typeFile = path.extname(loadingFilePath).slice(1);
 
-    const typeFile = path.extname(loadingFilePath).slice(1);
-    console.log('typeFile');
-    console.log(typeFile);
+     const loadingFile = fs.createReadStream(loadingFilePath);
+     loadingFile.on('open', () => {
+       res.setHeader('Content-Type', `image/${typeFile}`);
+       loadingFile.pipe(res);
+     });
+   }
 
-    const loadingFile = fs.createReadStream(loadingFilePath);
-    loadingFile.on('open', () => {
-      res.setHeader('Content-Type', `image/${typeFile}`);
-      loadingFile.pipe(res);
-    });
-    // res.sendFile(loadingFile);
-    // await res.json({message: 'logo'});
-  }
+   async getSubLogo(req: Request, res: Response, next: NextFunction) {
+     // const mime = {
+     //   'html': 'text/html',
+     //   'txt': 'text/plain',
+     //   'css': 'text/css',
+     //   'gif': 'image/gif',
+     //   'jpg': 'image/jpeg',
+     //   'png': 'image/png',
+     //   'svg': 'image/svg+xml',
+     //   'js': 'application/javascript'
+     // };
 
-  async getSubLogo(req: Request, res: Response, next: NextFunction) {
-    // const mime = {
-    //   'html': 'text/html',
-    //   'txt': 'text/plain',
-    //   'css': 'text/css',
-    //   'gif': 'image/gif',
-    //   'jpg': 'image/jpeg',
-    //   'png': 'image/png',
-    //   'svg': 'image/svg+xml',
-    //   'js': 'application/javascript'
-    // };
+     const pathFile = path.resolve(process.cwd(), 'public/subcategory/');
 
-    const pathFile = path.resolve(process.cwd(), 'public/subcategory/');
-    // console.log((global as any).appRoot);
+     const category = await categoryService.getSubCategory(req.params.cat_id as Partial<ICategory>);
 
-    console.log(pathFile);
-    // console.log(req);
-    console.log(req.params);
-    // await res.end();
+     const loadingFilePath = pathFile + `/${category?.logo}`;
+     const typeFile = path.extname(loadingFilePath).slice(1);
 
-    const category = await categoryService.getSubCategory(req.params.cat_id as Partial<ICategory>);
-    console.log(category?.logo);
-    const loadingFilePath = pathFile + `/${category?.logo}`;
-    console.log(loadingFilePath);
+     const loadingFile = fs.createReadStream(loadingFilePath);
+     loadingFile.on('open', () => {
+       res.setHeader('Content-Type', `image/${typeFile}`);
+       loadingFile.pipe(res);
+     });
+   }
 
-    const typeFile = path.extname(loadingFilePath).slice(1);
-    console.log('typeFile');
-    console.log(typeFile);
+   getSubSubLogo = async (req: Request, res: Response, next: NextFunction) => {
+     // const mime = {
+     //   'html': 'text/html',
+     //   'txt': 'text/plain',
+     //   'css': 'text/css',
+     //   'gif': 'image/gif',
+     //   'jpg': 'image/jpeg',
+     //   'png': 'image/png',
+     //   'svg': 'image/svg+xml',
+     //   'js': 'application/javascript'
+     // };
 
-    const loadingFile = fs.createReadStream(loadingFilePath);
-    loadingFile.on('open', () => {
-      res.setHeader('Content-Type', `image/${typeFile}`);
-      loadingFile.pipe(res);
-    });
-    // res.sendFile(loadingFile);
-    // await res.json({message: 'logo'});
-  }
+     const pathFile = path.resolve(process.cwd(), 'public/subsubcategory/');
 
-  async getSubSubLogo(req: Request, res: Response, next: NextFunction) {
-    // const mime = {
-    //   'html': 'text/html',
-    //   'txt': 'text/plain',
-    //   'css': 'text/css',
-    //   'gif': 'image/gif',
-    //   'jpg': 'image/jpeg',
-    //   'png': 'image/png',
-    //   'svg': 'image/svg+xml',
-    //   'js': 'application/javascript'
-    // };
+     const category = await categoryService.getSubSubCategory(req.params.cat_id as Partial<ICategory>);
 
-    const pathFile = path.resolve(process.cwd(), 'public/subsubcategory/');
-    // console.log((global as any).appRoot);
+     const loadingFilePath = pathFile + `/${category?.logo}`;
+     const typeFile = path.extname(loadingFilePath).slice(1);
 
-    console.log(pathFile);
-    // console.log(req);
-    console.log(req.params);
-    // await res.end();
-
-    const category = await categoryService.getSubSubCategory(req.params.cat_id as Partial<ICategory>);
-    console.log(category?.logo);
-    const loadingFilePath = pathFile + `/${category?.logo}`;
-    console.log(loadingFilePath);
-
-    const typeFile = path.extname(loadingFilePath).slice(1);
-    console.log('typeFile');
-    console.log(typeFile);
-
-    const loadingFile = fs.createReadStream(loadingFilePath);
-    loadingFile.on('open', () => {
-      res.setHeader('Content-Type', `image/${typeFile}`);
-      loadingFile.pipe(res);
-    });
-    // res.sendFile(loadingFile);
-    // await res.json({message: 'logo'});
-  }
-
-  // addSubToCat = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     // const {subTitle, catTitle} = req.body;
-  //     console.log(req.body);
-  //     const cat = await categoryService.getCategoryByTitle(req.body.catTitle);
-  //     const sub = await categoryService.getSubCategoryByTitle(req.body.subTitle);
-  //
-  //     console.log(cat);
-  //     console.log(sub);
-  //     if (cat && sub) {
-  //       sub.parentID = cat.id;
-  //       cat.subCategories.push(sub);
-  //       await sub.save();
-  //       await cat.save();
-  //     }
-  //     res.json(cat);
-  //   } catch (e) {
-  //     return next(e);
-  //   }
-  // }
-
-  // addSubSubToSub = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const subSub = await categoryService.getSubSubCategoryByTitle(req.body.subSubTitle);
-  //     const sub = await categoryService.getSubCategoryByTitle(req.body.subTitle);
-  //     // const cut = await categoryService.getCategory(sub?.parentID)
-  //     if (subSub && sub) {
-  //
-  //       subSub.parentID = sub.id;
-  //       sub.subsubCategories.push(subSub);
-  //       await subSub.save();
-  //       await sub.save();
-  //       console.log('sub.parentID');
-  //       console.log(sub.parentID);
-  //       const cat = await categoryService.getCategory(sub.parentID as Partial<ICategory>);
-  //       const updatedCategory = await categoryService.updateCategoryBySubCategory(cat as CategoryType, sub as ISubCategory);
-  //
-  //       res.json(updatedCategory);
-  //     }
-  //
-  //   } catch (e) {
-  //     return next(e);
-  //   }
-  // }
-  createCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
-    console.log(req.body);
-    const csvFilePath = 'public/category/csv/Categories.csv';
-
-    const jsonArray = await csv().fromFile(csvFilePath);
-    console.log(jsonArray);
-    for (const jsonArrayElement of jsonArray) {
-      await categoryService.createCategory(jsonArrayElement);
-    }
-    res.json(jsonArray);
-  }
+     const loadingFile = fs.createReadStream(loadingFilePath);
+     loadingFile.on('open', () => {
+       res.setHeader('Content-Type', `image/${typeFile}`);
+       loadingFile.pipe(res);
+     });
+   }
 
   createCategoriesFromCSVExt = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    try {
+      const csvFilePath = 'public/category/csv/Categories.csv';
+      const jsonArray = await csv().fromFile(csvFilePath);
+
+      for (const jsonArrayElement of jsonArray) {
+        await categoryService.createCategory(jsonArrayElement);
+      }
+      res.json(jsonArray);
+    } catch (e) {
+      return next(e);
+    }
+  }
+
+  createCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const csvFilePath = 'public/category/csv/Categories.csv';
       const categoryArray = await csvParserHelper(csvFilePath);
@@ -471,11 +390,11 @@ class CategoryController {
     } catch (e) {
       return next(e);
     }
-
   }
 
   createSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     const subCategoryArray = await csvParserHelper('public/category/csv/SubCategories.csv');
+
     for (const cat of subCategoryArray) {
       const {title} = cat as Partial<ISubCategory>;
       const subcategory = await categoryService.findSubCategoryByProperty({title});
@@ -496,9 +415,11 @@ class CategoryController {
 
   createSubSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     const subSubCategoryArray = await csvParserHelper('public/category/csv/SubSubCategories.csv');
+
     for (const cat of subSubCategoryArray) {
       const {title} = cat as Partial<ISubSubCategory>;
       const subSubcategory = await categoryService.findSubSubCategoryByProperty({title});
+
       if (subSubcategory) {
         return next(new ErrorHandler(
           ResponseStatusCodeEnum.BAD_REQUEST,

@@ -1,5 +1,7 @@
 import * as Joi from 'joi';
+
 import {OrderDeliveryEnum, OrderPaymentMethodEnum, RegexEnum} from '../../constants';
+
 export const confirmOrderValidator = Joi.object(
   {
     paymentMethod: Joi
@@ -37,6 +39,5 @@ export const confirmOrderValidator = Joi.object(
       .min(2)
       .max(30)
       .required()
-
   }
 );

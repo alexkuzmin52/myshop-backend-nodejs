@@ -39,8 +39,6 @@ export interface IProduct {
   shortDescription: string;
   stockCount: number;
   storeCount: number;
-  // subCategory?: string;
-  // subSubCategory?: string;
   title: string;
   updatedAt: string;
   userID: string;

@@ -1,11 +1,10 @@
 import {Request} from 'express';
 
-import {ICategory, ISubCategory, ISubSubCategory} from './category';
-import {IUser} from './user';
-import {IProduct} from './product';
 import {ICart} from './cart';
+import {ICategory, ISubCategory, ISubSubCategory} from './category';
 import {IOrder} from './order';
-// import {IProduct} from './product';
+import {IProduct} from './product';
+import {IUser} from './user';
 
 export interface IRequestExtended extends Request {
   category?: ICategory;

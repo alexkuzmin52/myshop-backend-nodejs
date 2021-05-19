@@ -1,8 +1,8 @@
 import {NextFunction, Response} from 'express';
 
 import {CartModel} from '../../database';
-import {IRequestExtended, IUser} from '../../models';
 import {CartStatusEnum} from '../../constants';
+import {IRequestExtended, IUser} from '../../models';
 import {cartService} from '../../services';
 
 export const checkIsUserCartExistMiddleware = async (

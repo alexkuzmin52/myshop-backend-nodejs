@@ -1,13 +1,5 @@
 import {CartStatusEnum} from '../../constants';
 
-export interface IProductInCart {
-  productID: string;
-  count: number;
-  price: number;
-  sumProduct: number;
-  id: number;
-}
-
 export interface ICart {
   _id: string,
   products: [
@@ -19,7 +11,6 @@ export interface ICart {
     }
   ],
 
-  // products: [IProductInCart],
   userID: string;
   status: CartStatusEnum;
   amount: number;

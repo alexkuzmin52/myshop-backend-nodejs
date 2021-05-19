@@ -1,5 +1,6 @@
 import {CartModel, CartType} from '../../database';
 import {ICart} from '../../models';
+
 export class CartService {
   getPopulatedUserCart = (userID: string): Promise<CartType | null> => {
     return CartModel
@@ -24,7 +25,7 @@ export class CartService {
   updateCart(cartID: string, updatingCart: ICart): Promise<ICart | null> {
     return CartModel.findOneAndUpdate({_id: cartID}, updatingCart, {new: true}).exec();
   }
-
+  //TODO
   getUserCart(userID: string): Promise<CartType | null> {
     return CartModel.findOne({userID}).exec();
   }

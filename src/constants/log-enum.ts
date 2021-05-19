@@ -5,5 +5,5 @@ export enum LogEnum {
   USER_REGISTERED = 'user_registered',
   USER_CONFIRMED = 'user_confirmed',
 
-  PRODUCT_CREATED = 'product_created'
+  // PRODUCT_CREATED = 'product_created'
 }

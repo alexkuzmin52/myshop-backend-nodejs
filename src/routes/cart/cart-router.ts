@@ -1,13 +1,12 @@
 import {Router} from 'express';
+
 import {
-  // addProductToCartValidatorMiddleware,
   addProductToCartMiddleware,
   addProductToCartValidatorMiddleware,
   checkAccessTokenMiddleware,
   checkIsUserCartExistMiddleware
 } from '../../middlewares';
 import {cartController} from '../../controllers';
-// import {CheckIsValidObjectIdMiddleware} from '../../middlewares/check-is-valid-object-id-middleware';
 
 const router = Router();
 

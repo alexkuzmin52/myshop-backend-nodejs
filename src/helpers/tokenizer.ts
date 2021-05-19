@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+
 import {ActionEnum, ResponseStatusCodeEnum} from '../constants';
 import {config} from '../config';
 import {customErrors, ErrorHandler} from '../errors';

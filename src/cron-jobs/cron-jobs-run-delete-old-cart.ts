@@ -1,7 +1,8 @@
 import * as cron from 'node-cron';
 import * as dayjs from 'dayjs';
-import {CartStatusEnum} from '../constants';
+
 import {CartModel} from '../database';
+import {CartStatusEnum} from '../constants';
 import {cartService} from '../services';
 
 export const CronJobsRunDeleteOldCart = () => {

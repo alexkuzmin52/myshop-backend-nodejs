@@ -22,7 +22,6 @@ export const checkAccessTokenMiddleware = async (
     }
 
     await tokenVerificator(ActionEnum.USER_AUTH, token);
-
     const userByAccessToken = await authService.findUserByAccessToken({accessToken: token});
 
     if (!userByAccessToken) {

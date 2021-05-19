@@ -1,10 +1,10 @@
 export enum OrderStatusEnum {
-  REGISTERED ='registered',
-  CONFIRMED = 'confirmed',
   COMPLETED = 'completed',
-  SENT = 'sent',
+  CONFIRMED = 'confirmed',
   DELIVERED = 'delivered',
-  RECEIVED = 'received',
-  RETURNED = 'returned',
   PAID = 'paid',
+  RECEIVED = 'received',
+  REGISTERED ='registered',
+  RETURNED = 'returned',
+  SENT = 'sent',
 }

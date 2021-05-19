@@ -1,10 +1,13 @@
-import {Document, model, Model, Schema} from 'mongoose';
-import {TableNamesEnum} from '../../../constants';
-import {ISubSubCategory} from '../../../models';
 import * as autoIncrement from 'mongoose-auto-increment';
 import * as mongoose from 'mongoose';
+import {Document, model, Model, Schema} from 'mongoose';
+
+import {ISubSubCategory} from '../../../models';
+import {TableNamesEnum} from '../../../constants';
+import {config} from '../../../config';
 
 export type SubSubCategoryType = ISubSubCategory & Document;
+
 export const SubSubCategorySchema = new Schema<ISubSubCategory>({
   id: {
     type: {type: Number}
@@ -33,7 +36,7 @@ autoIncrement.initialize(mongoose.connection);
 SubSubCategorySchema.plugin(autoIncrement.plugin, {
   model: 'SubSubCategoryModel',
   field: 'id',
-  startAt: 3000,
+  startAt: config.START_NUMBER_SUB_SUB_CATEGORY_ID,
   incrementBy: 1
 });
 

@@ -1,6 +1,9 @@
 export enum ActionEnum {
   USER_AUTH = 'user_auth',
+  USER_LOGIN = 'user_login',
   USER_LOGOUT = 'user_logout',
+  USER_REGISTERED = 'user_registered',
+  USER_CONFIRMED = 'user_confirmed',
   USER_FORGOT_PASSWORD = 'user_forgot_password',
   USER_REGISTER = 'user_register',
   USER_RESET_PASSWORD = 'user_reset_password',
@@ -20,5 +23,4 @@ export enum ActionEnum {
   SUB_SUB_CATEGORY_CREATE = 'create_sub_sub_category',
   ADD_SUB_CATEGORY = 'add_sub_category_to_category',
   ADD_SUB_SUB_CATEGORY = 'add_sub_sub_category_to_sub_category',
-
 }
