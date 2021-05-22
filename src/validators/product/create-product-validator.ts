@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-import {ProductTypeEnum} from '../../constants';
+import {ProductTypeEnum, RegexEnum} from '../../constants';
 
 export const createProductValidator = Joi.object(
   {
@@ -45,7 +45,7 @@ export const createProductValidator = Joi.object(
       .number()
       .min(0)
       .max(0.99),
-    discountPrice: Joi
+    originalPrice: Joi
       .number()
       .min(0.01)
       .max(99999),
@@ -70,6 +70,9 @@ export const createProductValidator = Joi.object(
       .min(0),
     newFlag: Joi
       .boolean(),
+    overview_url: Joi
+      .string()
+      .regex(RegexEnum.url),
     packageAmount: Joi
       .number()
       .integer()
@@ -78,12 +81,16 @@ export const createProductValidator = Joi.object(
       .object({
         length: Joi.number().min(0).max(9999).integer(),
         width: Joi.number().min(0).max(9999).integer(),
-        height: Joi.number().min(0).max(9999).integer()
+        height: Joi.number().min(0).max(9999).integer(),
+        weight: Joi.number().min(0).max(9999).integer()
       }),
-    packageWeight: Joi
-      .number()
-      .min(0)
-      .max(9999),
+    itemDimensions: Joi
+      .object({
+        length: Joi.number().min(0).max(9999).integer(),
+        width: Joi.number().min(0).max(9999).integer(),
+        height: Joi.number().min(0).max(9999).integer(),
+        weight: Joi.number().min(0).max(9999).integer()
+      }),
     price: Joi
       .number()
       .min(0.01)

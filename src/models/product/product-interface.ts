@@ -1,14 +1,25 @@
 import {ProductTypeEnum} from '../../constants';
 
-export interface IReviews {
+export interface IReview {
+  _id: string,
   comment?: string;
   rating?: number;
-  user?: string;
+  userID?: string;
+  createdAt: Date;
 }
-export interface IDimensions {
+
+export interface IPackageDimensions {
   length?: number;
   width?: number;
   height?: number;
+  weight?: number;
+}
+
+export interface IItemDimensions {
+  length?: number;
+  width?: number;
+  height?: number;
+  weight?: number;
 }
 
 export interface IProduct {
@@ -21,20 +32,21 @@ export interface IProduct {
   createdAt: string;
   discount: number;
   discountFlag: boolean;
-  discountPrice: number;
+  originalPrice: number;
   equipment: string;
   fullCharacteristics: string;
   fullDescription: string;
   id: number;
   newFlag: boolean;
+  overview_url: string;
   packageAmount?: number;
-  packageDimensions?: [IDimensions];
-  packageWeight?: number;
+  packageDimensions?: IPackageDimensions;
+  itemDimensions?: IItemDimensions;
   photo?: string[];
   price: number;
   promoFlag: boolean;
   provider: string;
-  reviews?: IReviews[];
+  reviews?: IReview[];
   shortCharacteristics: string;
   shortDescription: string;
   stockCount: number;

@@ -1,10 +1,12 @@
 import {Router} from 'express';
 
 import {productController} from '../../controllers';
-import {checkAccessTokenMiddleware,
+import {
+  AddReviewValidatorMiddleware, checkAccessTokenMiddleware,
   checkIsProductAlreadyExistMiddleware,
   checkIsProductExistMiddleware,
-  createProductValidatorMiddleware} from '../../middlewares';
+  createProductValidatorMiddleware
+} from '../../middlewares';
 import {uploadCSVProduct, uploadProduct} from '../../config';
 
 const router = Router();
@@ -12,6 +14,7 @@ const router = Router();
 router.get('/filter', productController.getProductsByFilter);
 router.get('/:productID', productController.getProduct);
 router.get('/', productController.getProducts);
+router.get('/review/:productID', productController.getProductReviews);
 
 router.post('',
   checkAccessTokenMiddleware,
@@ -19,7 +22,9 @@ router.post('',
   checkIsProductAlreadyExistMiddleware,
   productController.createProduct);
 
-router.post('/csv', uploadCSVProduct.single('csv_file'), productController.createProductFromCSV);
+router.post('/csv',
+  uploadCSVProduct.single('csv_file'),
+  productController.createProductFromCSV);
 
 router.put('/:productID',
   checkAccessTokenMiddleware,
@@ -27,10 +32,25 @@ router.put('/:productID',
   checkIsProductExistMiddleware,
   productController.updateProduct);
 
+router.put('/review/:productID',
+  checkAccessTokenMiddleware,
+  AddReviewValidatorMiddleware,
+  checkIsProductExistMiddleware,
+  productController.addProductReview);
+
 router.delete('/:productID',
   checkAccessTokenMiddleware,
   checkIsProductExistMiddleware,
   productController.deleteProduct);
+
+router.delete('/review/:productID/:commentID',
+  checkAccessTokenMiddleware,
+  checkIsProductExistMiddleware,
+  productController.deleteComment);
+
+router.delete('/reviews/:userID',
+  checkAccessTokenMiddleware,
+  productController.deleteUserComments);
 
 router.post('/addPhoto/:productID',
   checkAccessTokenMiddleware,

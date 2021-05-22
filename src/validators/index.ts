@@ -1,3 +1,4 @@
+export * from './review';
 export * from './auth';
 export * from './cart';
 export * from './category';

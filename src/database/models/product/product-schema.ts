@@ -8,12 +8,70 @@ import {config} from '../../../config';
 
 export type ProductType = IProduct & Document;
 
-const dimensions = {
-  length: Number,
-  width: Number,
-  height: Number
+const packageDimensionsSubModel = {
+  length: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  width: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  height: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  weight: {
+    type: Number,
+    required: false,
+    default: 0
+  }
 };
-
+const itemDimensionsSubModel = {
+  length: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  width: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  height: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  weight: {
+    type: Number,
+    required: false,
+    default: 0
+  }
+};
+const reviewSubModel = {
+  comment: {
+    type: String,
+    required: true,
+    default: ''
+  },
+  rating: {
+    type: Number,
+    required: true
+  },
+  userID: {
+    type: Schema.Types.ObjectId,
+    ref: TableNamesEnum.USER
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now()
+  }
+};
 export const ProductSchema = new Schema<IProduct>(
   {
     accountingType: {
@@ -51,7 +109,7 @@ export const ProductSchema = new Schema<IProduct>(
       default: false
     },
 
-    discountPrice: {
+    originalPrice: {
       type: Number,
       required: false,
       default: 0
@@ -81,17 +139,17 @@ export const ProductSchema = new Schema<IProduct>(
       required: false,
       default: false
     },
+    overview_url: {
+      type: String,
+      default: 'http://www.google.com'
+    },
     packageAmount: {
       type: Number,
       required: false,
       default: 1
     },
-    packageDimensions: dimensions,
-    packageWeight: {
-      type: Number,
-      required: false,
-      default: 0
-    },
+    packageDimensions: packageDimensionsSubModel,
+    itemDimensions: itemDimensionsSubModel,
     photo: {
       type: Array,
       required: false,
@@ -110,10 +168,13 @@ export const ProductSchema = new Schema<IProduct>(
       type: String,
       required: true
     },
-    reviews: {
-      type: SchemaTypes.ObjectId,
-      ref: TableNamesEnum.REVIEWS
-    },
+    reviews: [reviewSubModel],
+
+    // reviews: {type: [reviewSubModel], excludeIndexes: true},
+    // reviews: {
+    //   type: SchemaTypes.ObjectId,
+    //   ref: TableNamesEnum.REVIEWS
+    // },
     shortCharacteristics: {
       type: String,
       required: false,

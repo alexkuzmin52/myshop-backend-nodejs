@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
-import {IProduct, IProductFilterQuery, IRequestExtended, IUser} from '../../models';
+import {IProduct, IProductFilterQuery, IRequestExtended, IReview, IUser} from '../../models';
 import {csvParserHelper, ProductQueryBuilder} from '../../helpers';
 import {customErrors, ErrorHandler} from '../../errors';
 import {logService, productService} from '../../services';
@@ -129,6 +129,63 @@ export class ProductController {
     } catch (e) {
       return next(e);
     }
+  }
+
+  addProductReview = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    try {
+      const update = {...req.body, userID: req.user?._id, createdAt: Date.now()} as IReview;
+
+      const updatedProduct = await productService.updateProductByReview(req.product?._id as string, update);
+
+      res.json(updatedProduct);
+    } catch (e) {
+      next(e);
+    }
+
+  }
+
+  // deleteComment = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+  //   try {
+  //     const product = req.product as IProduct;
+  //     const commentID = req.params.commentID;
+  //     if (product.reviews !== undefined) {
+  //       const index = product.reviews.findIndex((value) => value._id.toString() === commentID);
+  //       console.log(index);
+  //       if (index !== -1) {
+  //         product.reviews.splice(index, 1);
+  //       }
+  //     }
+  //     const updatedProduct = await productService.removeComment(product);
+  //     res.json(updatedProduct);
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
+
+  deleteComment = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    try {
+      const product = req.product as IProduct;
+      const commentID = req.params.commentID;
+
+      const updatedProduct = await productService.removeCommentExt(product.id, commentID);
+
+      res.json(updatedProduct);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  getProductReviews = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    const reviews = await productService.getReviewsByProductID(+req.params.productID);
+    res.json(reviews[0].reviews?.sort((a, b) => {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    }));
+  }
+
+  deleteUserComments = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    const {_id} = req.user as IUser;
+    const products = await productService.removeAllUserComments(_id);
+    res.json(products);
   }
 }
 

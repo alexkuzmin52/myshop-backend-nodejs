@@ -1,11 +1,15 @@
-import {NextFunction, Request, Response} from 'express';
+import {NextFunction, Response} from 'express';
 
 import {ResponseStatusCodeEnum} from '../../constants';
 import {customErrors, ErrorHandler} from '../../errors';
 import {productService} from '../../services';
+import {IRequestExtended} from '../../models';
 
-export const checkIsProductExistMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-  const productByID = await productService.findOneByProperty({ id: + req.params.productID});
+export const checkIsProductExistMiddleware = async (
+  req: IRequestExtended,
+  res: Response,
+  next: NextFunction): Promise<void> => {
+  const productByID = await productService.findOneByProperty({id: +req.params.productID});
 
   if (!productByID) {
     return next(new ErrorHandler(
@@ -14,6 +18,8 @@ export const checkIsProductExistMiddleware = async (req: Request, res: Response,
       customErrors.BAD_REQUEST_PRODUCT_UPDATE_NOT_FOUND.code
     ));
   }
-
+  /////////////////////////////////////////////
+  req.product = productByID;
+  ////////////////////////////////////////////
   next();
 };

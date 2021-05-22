@@ -4,7 +4,7 @@ import {OrderStatusEnum} from '../constants';
 import {OrderModel} from '../database';
 import {orderService} from '../services';
 
-export const CronJobsRunDeleteOldOrder = () => {
+export const CronJobsRunDeleteOldOrder = (): void => {
   cron.schedule('*/30 * * * *', async () => {
     console.log('CRON RUN DELETE OLD ORDER');
     const deletedOrders = await OrderModel.find({

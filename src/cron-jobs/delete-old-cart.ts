@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 // import {cartService} from '../services';
 // import {ICart} from '../models';
 
-export const deleteOldCart =async () => {
+export const deleteOldCart = async () => {
   console.log('*****************************************************deleteOldCart');
 
   const deletedCarts = await CartModel.find({
