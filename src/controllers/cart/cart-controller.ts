@@ -34,7 +34,6 @@ export class CartController {
       res.json({message: 'Product added to cart successfully', cart: updatedCart});
 
     } catch (e) {
-      console.log(e);
       res.json(e.message);
     }
   }

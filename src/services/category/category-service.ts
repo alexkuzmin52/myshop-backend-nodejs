@@ -118,15 +118,11 @@ export class CategoryService {
   }
 
   getSubSubCategoryByTitle(titleSubSub: string): Promise<SubSubCategoryType | null> {
-    console.log(titleSubSub);
 
     return SubSubCategoryModel.findOne({title: titleSubSub}).exec();
   }
 
   removeCategory(idCategory: Partial<ICategory>): Promise<{ deletedCount?: number }> {
-    console.log('idCategory');
-    console.log(idCategory);
-
     return CategoryModel.deleteOne(idCategory).exec();
   }
 

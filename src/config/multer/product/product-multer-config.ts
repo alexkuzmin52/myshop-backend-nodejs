@@ -1,9 +1,19 @@
 import * as multer from 'multer';
+import {ProductType} from '../../../database';
+import {IRequestExtended} from '../../../models';
+import * as fs from 'fs-extra';
 
 const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, 'public/product');
+  // destination: (req, file, callback) => {
+  //   callback(null, 'public/product');
+  // },
+  destination: (req: IRequestExtended, file, callback) => {
+    const {title} = req.product as ProductType;
+    const path = `public/product/${title}`;
+    fs.mkdirsSync(path);
+    callback(null, path);
   },
+
   filename: (req, file, callback) => {
     req.body.photo = file.originalname;
     callback(null, file.originalname);

@@ -52,13 +52,6 @@ export class ProductService {
     ).exec();
   }
 
-  // deleteComment(productID: number, commentID: any):Promise<ProductType | null> {
-  //   return ProductModel.update(
-  //     {id: productID},
-  //     {$pull:
-  //         {reviews: {$elemMatch: {_id: commentID}}}}
-  //   ).exec()
-  // }
   removeComment(product: IProduct): Promise<ProductType | null> {
     return ProductModel.findOneAndUpdate({id: product.id}, product, {new: true}).exec();
   }
@@ -93,6 +86,20 @@ export class ProductService {
 
   getProductsForUpdate(_id: string): Promise<ProductType[] | []> {
     return ProductModel.find({'reviews.userID': _id}).exec();
+  }
+
+  addProductPhotos(originalName: string, _id: string | undefined) {
+    return ProductModel.findByIdAndUpdate(_id,
+      {$push: {photo: originalName}},{new: true})
+    ;
+  }
+
+  removePhotoOfProduct(_id: Partial<IProduct>, photoTitle: string): Promise<ProductType | null> {
+    return ProductModel.findByIdAndUpdate(_id,
+      {$pull: {
+        photo: photoTitle
+      }},
+      {new : true}).exec();
   }
 }
 

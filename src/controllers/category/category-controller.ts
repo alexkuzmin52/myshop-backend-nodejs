@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
 import * as csv from 'csvtojson';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';

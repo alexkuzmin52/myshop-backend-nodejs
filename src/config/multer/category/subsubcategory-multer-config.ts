@@ -7,7 +7,6 @@ const storage = multer.diskStorage(
       callback(null, 'public/subsubcategory/');
     },
     filename: (req: any, file: any, callback: any) => {
-      console.log(file.originalname);
       req.body.logo=file.originalname;
       callback(null, file.originalname);
     }

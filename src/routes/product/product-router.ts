@@ -52,17 +52,28 @@ router.delete('/reviews/:userID',
   checkAccessTokenMiddleware,
   productController.deleteUserComments);
 
+router.delete('/photo/:productID/:photoTitle',
+  checkAccessTokenMiddleware,
+  checkIsProductExistMiddleware,
+  productController.deletePhotoProduct);
+
 router.post('/addPhoto/:productID',
   checkAccessTokenMiddleware,
   checkIsProductExistMiddleware,
   uploadProduct.single('photo'),
   productController.addProductSinglePhoto);
 
-//TODO
-// router.post('/addPhotos/:productID',
-//   checkAccessTokenMiddleware,
-//   checkIsProductExistMiddleware,
-//   uploadProduct.array('photos', 10),
-//   productController.addProductSinglePhoto)
+/********************************multer array files*****************************************/
+router.post('/photos/:productID',
+  // checkAccessTokenMiddleware,
+  checkIsProductExistMiddleware,
+  uploadProduct.array('photos', 6),
+  productController.addProductMultiPhoto);
+
+/********************************get multiply files with productPhotos************************/
+// router.get('/photos/:productID', productController.getProductPhotos);
+router.get('/photo/:productID/:photoTitle',
+  checkIsProductExistMiddleware,
+  productController.getProductPhoto);
 
 export const productRouter = router;

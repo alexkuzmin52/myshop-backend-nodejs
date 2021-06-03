@@ -1,16 +1,45 @@
 import {NextFunction, Request, Response} from 'express';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
 import {ActionEnum, ResponseStatusCodeEnum} from '../../constants';
 import {IProduct, IProductFilterQuery, IRequestExtended, IReview, IUser} from '../../models';
+import {ProductType} from '../../database';
 import {csvParserHelper, ProductQueryBuilder} from '../../helpers';
 import {customErrors, ErrorHandler} from '../../errors';
 import {logService, productService} from '../../services';
 
 export class ProductController {
+  /***********************************CRUD products***********************************/
   getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const allProducts = await productService.getProducts();
       res.json(allProducts);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  getProductsByFilter = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.query.limit) {
+        req.query.limit = '20';
+      }
+      if (!req.query.page) {
+        req.query.page = '1';
+      }
+
+      const filterQuery = ProductQueryBuilder(req.query as Partial<IProductFilterQuery>);
+
+      const products = await productService.findProductsByFilter(filterQuery, +req.query.limit, +req.query.page);
+
+      if (products.length) {
+        res.json(products);
+      } else {
+        return next(new ErrorHandler(ResponseStatusCodeEnum.NOT_FOUND,
+          customErrors.NOT_FOUND.message));
+      }
+
     } catch (e) {
       next(e);
     }
@@ -44,6 +73,33 @@ export class ProductController {
     }
   }
 
+  createProductFromCSV = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const csvFilePath = 'public/product/csv/KeysProduct.csv'; //TODO rename csv file
+      const productArray = await csvParserHelper(csvFilePath);
+
+      for (const product of productArray) {
+        const {title} = product as Partial<IProduct>;
+        const productByTitle = await productService.findOneByProperty({title});
+
+        if (productByTitle) {
+          return next(new ErrorHandler(
+            ResponseStatusCodeEnum.BAD_REQUEST,
+            customErrors.BAD_REQUEST_PRODUCT_TITLE.message,
+            customErrors.BAD_REQUEST_PRODUCT_TITLE.code
+          ));
+        }
+
+        await productService.createProduct(product as Partial<IProduct>);
+      }
+
+      const products = await productService.getProducts();
+      res.json(products);
+    } catch (e) {
+      return next(e);
+    }
+  }
+
   updateProduct = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const {_id} = req.user as IUser;
@@ -69,6 +125,7 @@ export class ProductController {
     }
   }
 
+  /***********************************PHOTOS products***********************************/
   addProductSinglePhoto = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const product = await productService.updateProduct(+req.params.productID, req.body);
@@ -79,58 +136,47 @@ export class ProductController {
     }
   }
 
-  getProductsByFilter = async (req: Request, res: Response, next: NextFunction) => {
+  addProductMultiPhoto = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
-      if (!req.query.limit) {
-        req.query.limit = '20';
-      }
-      if (!req.query.page) {
-        req.query.page = '1';
-      }
+      const photos = req.files as Express.Multer.File[];
 
-      const filterQuery = ProductQueryBuilder(req.query as Partial<IProductFilterQuery>);
-
-      const products = await productService.findProductsByFilter(filterQuery, +req.query.limit, +req.query.page);
-
-      if (products.length) {
-        res.json(products);
-      } else {
-        return next(new ErrorHandler(ResponseStatusCodeEnum.NOT_FOUND,
-          customErrors.NOT_FOUND.message));
+      for (const photo of photos) {
+        await productService.addProductPhotos(photo.originalname, req.product?._id);
       }
 
+      res.json({message: 'YES!!!'});
     } catch (e) {
       next(e);
     }
   }
 
-  createProductFromCSV = async (req: Request, res: Response, next: NextFunction) => {
+  getProductPhoto = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    const {title} = req.product as ProductType;
+    const filePath = `public/product/${title}/${req.params.photoTitle}`;
+    const typeFile = path.extname(filePath).slice(1);
+    const loadingFile = fs.createReadStream(filePath);
+    loadingFile.on('open', () => {
+      res.setHeader('Content-Type', `image/${typeFile}`);
+      loadingFile.pipe(res);
+    });
+    await res.json('done');
+
+  }
+
+  deletePhotoProduct = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
-      const csvFilePath = 'public/product/csv/KeysProduct.csv';
-      const productArray = await csvParserHelper(csvFilePath);
+      const product = req.product as IProduct;
+      const photoTitle = req.params.photoTitle;
 
-      for (const product of productArray) {
-        const {title} = product as Partial<IProduct>;
-        const productByTitle = await productService.findOneByProperty({title});
-
-        if (productByTitle) {
-          return next(new ErrorHandler(
-            ResponseStatusCodeEnum.BAD_REQUEST,
-            customErrors.BAD_REQUEST_PRODUCT_TITLE.message,
-            customErrors.BAD_REQUEST_PRODUCT_TITLE.code
-          ));
-        }
-
-        await productService.createProduct(product as Partial<IProduct>);
-      }
-
-      const products = await productService.getProducts();
-      res.json(products);
+      const deletedPhoto = await productService.removePhotoOfProduct(product._id as Partial<IProduct>, photoTitle);
+      await fs.unlink(`public/product/${product.title}/${photoTitle}`);
+      res.json(`photo ${deletedPhoto?.title} is removed`);
     } catch (e) {
-      return next(e);
+      next(e);
     }
   }
 
+  /***********************************REVIEWS products***********************************/
   addProductReview = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const update = {...req.body, userID: req.user?._id, createdAt: Date.now()} as IReview;
@@ -143,24 +189,6 @@ export class ProductController {
     }
 
   }
-
-  // deleteComment = async (req: IRequestExtended, res: Response, next: NextFunction) => {
-  //   try {
-  //     const product = req.product as IProduct;
-  //     const commentID = req.params.commentID;
-  //     if (product.reviews !== undefined) {
-  //       const index = product.reviews.findIndex((value) => value._id.toString() === commentID);
-  //       console.log(index);
-  //       if (index !== -1) {
-  //         product.reviews.splice(index, 1);
-  //       }
-  //     }
-  //     const updatedProduct = await productService.removeComment(product);
-  //     res.json(updatedProduct);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
 
   deleteComment = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
@@ -176,17 +204,26 @@ export class ProductController {
   }
 
   getProductReviews = async (req: IRequestExtended, res: Response, next: NextFunction) => {
-    const reviews = await productService.getReviewsByProductID(+req.params.productID);
-    res.json(reviews[0].reviews?.sort((a, b) => {
-      return b.createdAt.getTime() - a.createdAt.getTime();
-    }));
+    try {
+      const reviews = await productService.getReviewsByProductID(+req.params.productID);
+      res.json(reviews[0].reviews?.sort((a, b) => {
+        return b.createdAt.getTime() - a.createdAt.getTime();
+      }));
+    } catch (e) {
+      next(e);
+    }
   }
 
   deleteUserComments = async (req: IRequestExtended, res: Response, next: NextFunction) => {
-    const {_id} = req.user as IUser;
-    const products = await productService.removeAllUserComments(_id);
-    res.json(products);
+    try {
+      const {_id} = req.user as IUser;
+      const products = await productService.removeAllUserComments(_id);
+      res.json(products);
+    } catch (e) {
+      next(e);
+    }
   }
+
 }
 
 export const productController = new ProductController();

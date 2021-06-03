@@ -7,7 +7,6 @@ import {productService} from '../../services';
 
 export const checkIsProductAddCartExistMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<any> => {
   const productByID = await productService.findByID(req.query.productID as string);
-  console.log('checkIsProductAddCartExistMiddleware****************');
   const {count} = req.body;
   if (!productByID) {
     return next(new ErrorHandler(

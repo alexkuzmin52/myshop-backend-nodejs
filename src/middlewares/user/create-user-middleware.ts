@@ -5,7 +5,6 @@ import {IUser} from '../../models';
 import {createUserValidator} from '../../validators';
 
 export const createUserMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  console.log(req.body);
   const user = req.body as IUser;
   const {error} = Joi.validate(user, createUserValidator);
 

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import {parse} from '@fast-csv/parse';
 
 export const csvParserHelper = (csvFilePath: string): Promise<Array<string>> => {

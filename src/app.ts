@@ -58,7 +58,6 @@ class App {
   }
 
   private configCors = (origin: any, callback: any) => {
-    console.log('origin');
     const whitelist = config.ALLOWED_ORIGIN;
 
     if (!origin) {

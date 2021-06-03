@@ -7,8 +7,6 @@ class TestCategoryController {
   //************************************************************************************************************
   testCreateCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log('CategoryController');
-      console.log(req.body);
       const newCategory = await categoryService.createCategory(req.body as Partial<ICategory>);
       res.json(newCategory);
     } catch (e) {
@@ -48,13 +46,9 @@ class TestCategoryController {
   //************************************************************************************************************
   addSubToCat = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // const {subTitle, catTitle} = req.body;
-      console.log(req.body);
       const cat = await categoryService.getCategoryByTitle(req.body.catTitle);
       const sub = await categoryService.getSubCategoryByTitle(req.body.subTitle);
 
-      console.log(cat);
-      console.log(sub);
       if (cat && sub) {
         sub.parentID = cat.id;
         cat.subCategories.push(sub);
@@ -78,8 +72,6 @@ class TestCategoryController {
         sub.subSubCategories.push(subSub);
         await subSub.save();
         await sub.save();
-        console.log('sub.parentID');
-        console.log(sub.parentID);
         const cat = await categoryService.getCategory(sub.parentID as Partial<ICategory>);
         const updatedCategory = await categoryService.updateCategoryBySubCategory(cat as CategoryType, sub as ISubCategory);
 

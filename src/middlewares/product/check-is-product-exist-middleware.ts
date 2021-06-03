@@ -1,9 +1,9 @@
 import {NextFunction, Response} from 'express';
 
+import {IRequestExtended} from '../../models';
 import {ResponseStatusCodeEnum} from '../../constants';
 import {customErrors, ErrorHandler} from '../../errors';
 import {productService} from '../../services';
-import {IRequestExtended} from '../../models';
 
 export const checkIsProductExistMiddleware = async (
   req: IRequestExtended,
@@ -18,8 +18,7 @@ export const checkIsProductExistMiddleware = async (
       customErrors.BAD_REQUEST_PRODUCT_UPDATE_NOT_FOUND.code
     ));
   }
-  /////////////////////////////////////////////
+
   req.product = productByID;
-  ////////////////////////////////////////////
   next();
 };
