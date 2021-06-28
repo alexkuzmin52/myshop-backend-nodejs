@@ -6,8 +6,12 @@ export class ProductService {
     return ProductModel.findOne({id: productID}).exec();
   }
 
-  getProducts(): Promise<IProduct[]> {
-    return ProductModel.find().exec();
+  getProducts(): Promise<ProductType[]> {
+    return ProductModel.find({}).exec();
+    // const products =  ProductModel.find({}).exec();
+    //  console.log('++++++++++++++++++++++++++++++++++++++++++++++ products');
+    //  console.log(products);
+    //  return products;
   }
 
   createProduct(product: Partial<IProduct>): Promise<ProductType> {

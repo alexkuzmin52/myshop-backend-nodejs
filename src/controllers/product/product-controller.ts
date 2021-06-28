@@ -8,12 +8,15 @@ import {ProductType} from '../../database';
 import {csvParserHelper, ProductQueryBuilder} from '../../helpers';
 import {customErrors, ErrorHandler} from '../../errors';
 import {logService, productService} from '../../services';
+// import * as findUp from 'find-up';
 
 export class ProductController {
   /***********************************CRUD products***********************************/
   getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const allProducts = await productService.getProducts();
+      console.log('************************************************allProducts*********************');
+      console.log(allProducts.length);
       res.json(allProducts);
     } catch (e) {
       next(e);
@@ -75,7 +78,7 @@ export class ProductController {
 
   createProductFromCSV = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const csvFilePath = 'public/product/csv/KeysProduct.csv'; //TODO rename csv file
+      const csvFilePath = 'public/product/csv/Products.csv';
       const productArray = await csvParserHelper(csvFilePath);
 
       for (const product of productArray) {
@@ -150,16 +153,25 @@ export class ProductController {
     }
   }
 
-  getProductPhoto = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+  getProductPhoto = (req: IRequestExtended, res: Response, next: NextFunction) => {
     const {title} = req.product as ProductType;
     const filePath = `public/product/${title}/${req.params.photoTitle}`;
+
+    // const isFile = await findUp(filePath);
+    // console.log(isFile);
+    // if (isFile) {
+    //   if (!customConfirm('This file already exists. Do you want to replace it?')) {
+    //     return;
+    //   }
+    // }
+    //
     const typeFile = path.extname(filePath).slice(1);
     const loadingFile = fs.createReadStream(filePath);
     loadingFile.on('open', () => {
       res.setHeader('Content-Type', `image/${typeFile}`);
       loadingFile.pipe(res);
     });
-    await res.json('done');
+    // await res.json('done');
 
   }
 
