@@ -66,6 +66,9 @@ export const customErrors = {
     message: 'Updated product not found',
     code: 4013
   },
+  BAD_REQUEST_CATEGORY_UPDATE_NOT_FOUND: {
+    message: 'Updated category not found'
+  },
   BAD_REQUEST_ADD_PRODUCT_TO_CART_NOT_FOUND: {
     message: 'Product not found'
   },

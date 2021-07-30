@@ -31,6 +31,8 @@ export class CategoryService {
   }
 
   createSubSubCategory(subsubcategory: Partial<ISubSubCategory>): Promise<SubSubCategoryType> {
+    console.log('subsubcategory');
+
     return new SubSubCategoryModel(subsubcategory).save();
   }
 
@@ -126,13 +128,14 @@ export class CategoryService {
     return CategoryModel.deleteOne(idCategory).exec();
   }
 
-  removeSubCategory(idSubCategory: Partial<ISubCategory>): Promise<{ deletedCount?: number } > {
+  removeSubCategory(idSubCategory: Partial<ISubCategory>): Promise<{ deletedCount?: number }> {
     return SubCategoryModel.deleteOne(idSubCategory).exec();
   }
 
   removeSubSubCategory(idSubSubCategory: Partial<ISubSubCategory>): Promise<{ deletedCount?: number }> {
     return SubSubCategoryModel.deleteOne(idSubSubCategory).exec();
   }
+
   //TODO
   //  Sub Category========================================================================
   removeOneSubCategory(idSubCategory: Partial<ISubCategory>): Promise<{ deletedCount?: number }> {
@@ -143,11 +146,11 @@ export class CategoryService {
     return SubSubCategoryModel.deleteMany(parentID).exec();
   }
 
-  removeOneSubCategoryFromCategory(subcategory: Partial<ISubCategory>) {
+  removeOneSubCategoryFromCategory(subcategory: ISubCategory) {
     return CategoryModel.findOneAndUpdate({id: subcategory.parentID},
       {
         $pull: {
-          subCategories: {id: subcategory.id}
+          subCategories: {id:subcategory.id}
         }
       },
       {new: true});
@@ -223,6 +226,34 @@ export class CategoryService {
     }
 
     return subcategory.save();
+  }
+
+  getSubCategoriesByParams(param: { parentID: number }): Promise<SubCategoryType[] | null> {
+    return SubCategoryModel.find(param).exec();
+  }
+
+  getSubSubCategoriesByParams(param: { parentID: number }): Promise<SubSubCategoryType[] | null> {
+    return SubSubCategoryModel.find(param).exec();
+
+  }
+
+  changeSubCategoryParentID(id: number | undefined): Promise<{ nModified: number }> {
+    return SubCategoryModel.updateOne({parentID: id}, {parentID: -1}).exec();
+  }
+
+  changeSubSubCategoryParentID(id: number | undefined): Promise<{ nModified: number }> {
+    return SubSubCategoryModel.updateMany({parentID: id}, {parentID: -1}).exec();
+  }
+
+  updateSubCategoryByParams(subsubcategory: ISubSubCategory): Promise<SubCategoryType | null> {
+    return SubCategoryModel.findOneAndUpdate({id: subsubcategory.parentID},
+      {
+        $pull: {
+          subSubCategories: {id: subsubcategory.id}
+        }
+      },
+      {new: true}
+    ).exec();
   }
 }
 

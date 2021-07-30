@@ -2,15 +2,21 @@ import {Router} from 'express';
 
 import {categoryController} from '../../controllers';
 import {
-  checkAccessTokenMiddleware, checkIsCategoryEmptyMiddleware,
+  checkAccessTokenMiddleware,
+  checkIsCategoryEmptyMiddleware,
   checkIsExistCategoryMiddleware,
   checkIsExistSubCategoryMiddleware,
   checkIsExistSubSubCategoryMiddleware,
-  CheckIsSubCategoryAlreadyAddedToCategoryMiddleware, checkIsSubCategoryEmptyMiddleware,
-  CheckIsSubSubCategoryAlreadyAddedToSubCategoryMiddleware, checkIsSubSubCategoryEmptyMiddleware,
+  CheckIsSubCategoryAlreadyAddedToCategoryMiddleware,
+  checkIsSubCategoryEmptyMiddleware,
+  CheckIsSubSubCategoryAlreadyAddedToSubCategoryMiddleware,
+  checkIsSubSubCategoryEmptyMiddleware,
   createCategoryValidatorMiddleware,
   createSubCategoryValidatorMiddleware,
-  createSubSubCategoryValidatorMiddleware
+  createSubSubCategoryValidatorMiddleware,
+  uploadCategoryMiddleware,
+  uploadSubCategoryMiddleware,
+  uploadSubSubCategoryMiddleware
 } from '../../middlewares';
 import {uploadCategory, uploadCSV, uploadSubCategory, uploadSubSubCategory} from '../../config';
 
@@ -44,18 +50,23 @@ router.put('/addsubcategory',
 
 router.put('/addsubsubcategory',
   checkAccessTokenMiddleware,
-  checkAccessTokenMiddleware,
   CheckIsSubSubCategoryAlreadyAddedToSubCategoryMiddleware,
   categoryController.addSubSubCategory
 );
 
 router.post('/logo/:cat_id',
+  checkAccessTokenMiddleware,
+  uploadCategoryMiddleware,
   uploadCategory.single('file'),
   categoryController.updateCategory);
 router.post('/subcategory/logo/:cat_id',
+  checkAccessTokenMiddleware,
+  uploadSubCategoryMiddleware,
   uploadSubCategory.single('file'),
   categoryController.updateSubCategory);
 router.post('/subsubcategory/logo/:cat_id',
+  checkAccessTokenMiddleware,
+  uploadSubSubCategoryMiddleware,
   uploadSubSubCategory.single('file'),
   categoryController.updateSubSubCategory);
 
@@ -63,13 +74,13 @@ router.get('/subcategory', categoryController.GetAllSubCategories);
 router.get('/subsubcategory', categoryController.GetAllSubSubCategories);
 
 router.get('/:cat_id', categoryController.GetCategory);
-router.get('/subcategory/:cat_id', categoryController.GetSubCategory);
-router.get('/subsubcategory/:cat_id', categoryController.GetSubSubCategory);
+router.get('/subcategory/:cat_id', categoryController.GetSubCategoriesFromCategory);
+router.get('/subsubcategory/:cat_id', categoryController.GetSubSubCategoriesFromSubCategory);
 router.get('', categoryController.GetAllCategories);
 
-router.get('/logo/:cat_id', categoryController.getLogo);
-router.get('/subcategory/logo/:cat_id', categoryController.getSubLogo);
-router.get('/subsubcategory/logo/:cat_id', categoryController.getSubSubLogo);
+router.get('/logo/:cat_id', uploadCategoryMiddleware, categoryController.getLogo);
+router.get('/subcategory/logo/:cat_id', uploadSubCategoryMiddleware, categoryController.getSubLogo);
+router.get('/subsubcategory/logo/:cat_id', uploadSubSubCategoryMiddleware,categoryController.getSubSubLogo);
 
 router.put('/:cat_id', checkAccessTokenMiddleware, categoryController.updateCategory);
 router.put('/subcategory/:cat_id', checkAccessTokenMiddleware, categoryController.updateSubCategory);

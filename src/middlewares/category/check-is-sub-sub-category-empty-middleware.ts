@@ -6,7 +6,6 @@ import {categoryService} from '../../services';
 import {customErrors, ErrorHandler} from '../../errors';
 
 export const checkIsSubSubCategoryEmptyMiddleware = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<void> => {
-
   const subsubcategory = await categoryService.getSubSubCategoryByParams({id: +req.params.cat_id});
 
   if (!subsubcategory) {

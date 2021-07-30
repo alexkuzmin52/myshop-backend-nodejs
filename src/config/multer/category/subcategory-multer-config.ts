@@ -1,10 +1,18 @@
 import * as multer from 'multer';
+import * as fs from 'fs-extra';
+
+import {IRequestExtended, ISubCategory} from '../../../models';
 
 const storage = multer.diskStorage(
   {
-    destination: (req, file, callback) => {
+    destination: (req: IRequestExtended, file, callback) => {
+      const {title} = req.subcategory as ISubCategory;
+      const path = `public/subcategory/${title}`;
+      if (!fs.pathExistsSync(path)) {
+        fs.mkdirSync(path);
+      }
 
-      callback(null, 'public/subcategory/');
+      callback(null, path);
     },
     filename: (req: any, file: any, callback: any) => {
       req.body.logo=file.originalname;

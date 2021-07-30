@@ -10,9 +10,7 @@ export const CheckIsSubCategoryAlreadyAddedToCategoryMiddleware = async (
   res: Response,
   next: NextFunction) => {
   const {id} = req.body as Partial<ISubCategory>;
-
   const subCategory = await categoryService.getSubCategoryByParams({id});
-
   if (subCategory && subCategory.parentID > 0) {
     return next(new ErrorHandler(ResponseStatusCodeEnum.BAD_REQUEST,
       customErrors.BAD_REQUEST_SUB_CATEGORY_TO_CATEGORY_ALREADY_ADDED.message));

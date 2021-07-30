@@ -9,3 +9,6 @@ export * from './check-is-subSubCategory-already-added-to-SubCategory-middleware
 export * from './create-category-validator-middleware';
 export * from './create-sub-category-validator-middleware';
 export * from './create-sub-sub-category-validator-middleware';
+export * from './upload-category-middleware';
+export * from './upload-sub-category-middleware';
+export * from './upload-sub-sub-category-middleware';

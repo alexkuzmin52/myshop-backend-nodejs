@@ -11,6 +11,8 @@ export const checkAccessTokenMiddleware = async (
   res: Response,
   next: NextFunction): Promise<any> => {
   try {
+    console.log('checkAccessTokenMiddleware');
+
     const token = req.get(HeaderRequestEnum.AUTHORIZATION);
 
     if (!token) {
@@ -32,6 +34,7 @@ export const checkAccessTokenMiddleware = async (
     }
 
     req.user = userByAccessToken.userID;
+    console.log('checkAccessTokenMiddleware');
     next();
 
   } catch (e) {
