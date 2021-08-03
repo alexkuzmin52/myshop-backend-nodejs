@@ -257,6 +257,7 @@ class CategoryController {
   // ****************************************************** update ************************************************
   updateCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log(req.params.cat_id);
       const updatedCategory = await categoryService.updateCategory(+req.params.cat_id as Partial<ICategory>, req.body);
       res.json(updatedCategory);
 
