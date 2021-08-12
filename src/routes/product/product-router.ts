@@ -13,6 +13,7 @@ const router = Router();
 
 router.get('/filter', productController.getProductsByFilter);
 router.get('/:productID', productController.getProduct);
+router.get('/csv/file', productController.getCsvFile);
 router.get('/', productController.getProducts);
 router.get('/review/:productID', productController.getProductReviews);
 
@@ -24,6 +25,7 @@ router.post('',
 
 router.post('/csv',
   uploadCSVProduct.single('csv_file'),
+  checkAccessTokenMiddleware,
   productController.createProductFromCSV);
 
 router.put('/:productID',

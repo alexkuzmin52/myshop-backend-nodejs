@@ -5,7 +5,8 @@ const storage = multer.diskStorage({
     callback(null, 'public/product/csv');
   },
   filename: (req, file, callback) => {
-    req.body.photo = file.originalname;
+    // req.body.photo = file.originalname;
+    req.body.product = file.originalname;
     callback(null, file.originalname);
   }
 });

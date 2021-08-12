@@ -8,6 +8,7 @@ import {ProductType} from '../../database';
 import {csvParserHelper, ProductQueryBuilder} from '../../helpers';
 import {customErrors, ErrorHandler} from '../../errors';
 import {logService, productService} from '../../services';
+
 // import * as findUp from 'find-up';
 
 export class ProductController {
@@ -49,6 +50,7 @@ export class ProductController {
   }
 
   getProduct = async (req: Request, res: Response, next: NextFunction) => {
+    console.log('getProduct = async');
     try {
       const product = await productService.getProduct(+req.params.productID);
 
@@ -76,9 +78,10 @@ export class ProductController {
     }
   }
 
-  createProductFromCSV = async (req: Request, res: Response, next: NextFunction) => {
+  createProductFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
-      const csvFilePath = 'public/product/csv/Products.csv';
+      const fileName = req.product as Partial<IProduct>;
+      const csvFilePath = `public/product/csv/${fileName}`;
       const productArray = await csvParserHelper(csvFilePath);
 
       for (const product of productArray) {
@@ -236,6 +239,18 @@ export class ProductController {
     }
   }
 
+  getCsvFile = (req: IRequestExtended, res: Response, next: NextFunction) => {
+    console.log('getCsvFile = (req: IRequestExtended, res: Response, next: NextFunction) => {');
+    const pathFile = path.resolve(process.cwd(), `public/product/csv/KeysProduct.csv`);
+    const loadingFilePath = pathFile;
+    const typeFile = path.extname(loadingFilePath).slice(1);
+    const loadingFile = fs.createReadStream(loadingFilePath);
+    loadingFile.on('open', () => {
+      res.setHeader('Content-Type', `text/${typeFile}`);
+      loadingFile.pipe(res);
+    });
+
+  }
 }
 
 export const productController = new ProductController();

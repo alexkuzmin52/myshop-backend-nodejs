@@ -79,17 +79,17 @@ export const createProductValidator = Joi.object(
       .min(1),
     packageDimensions: Joi
       .object({
-        length: Joi.number().min(0).max(9999).integer(),
-        width: Joi.number().min(0).max(9999).integer(),
-        height: Joi.number().min(0).max(9999).integer(),
-        weight: Joi.number().min(0).max(9999).integer()
+        length: Joi.number().min(0).max(12000).integer(),
+        width: Joi.number().min(0).max(12000).integer(),
+        height: Joi.number().min(0).max(12000).integer(),
+        weight: Joi.number().min(0).max(12000).integer()
       }),
     itemDimensions: Joi
       .object({
-        length: Joi.number().min(0).max(9999).integer(),
-        width: Joi.number().min(0).max(9999).integer(),
-        height: Joi.number().min(0).max(9999).integer(),
-        weight: Joi.number().min(0).max(9999).integer()
+        length: Joi.number().min(0).max(12000).integer(),
+        width: Joi.number().min(0).max(12000).integer(),
+        height: Joi.number().min(0).max(12000).integer(),
+        weight: Joi.number().min(0).max(12000).integer()
       }),
     price: Joi
       .number()
