@@ -80,7 +80,7 @@ export class ProductController {
 
   createProductFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
-      const fileName = req.product as Partial<IProduct>;
+      const fileName = req.body.product as Partial<IProduct>;
       const csvFilePath = `public/product/csv/${fileName}`;
       const productArray = await csvParserHelper(csvFilePath);
 
@@ -241,7 +241,7 @@ export class ProductController {
 
   getCsvFile = (req: IRequestExtended, res: Response, next: NextFunction) => {
     console.log('getCsvFile = (req: IRequestExtended, res: Response, next: NextFunction) => {');
-    const pathFile = path.resolve(process.cwd(), `public/product/csv/KeysProduct.csv`);
+    const pathFile = path.resolve(process.cwd(), `public/product/csv/Products.csv`);
     const loadingFilePath = pathFile;
     const typeFile = path.extname(loadingFilePath).slice(1);
     const loadingFile = fs.createReadStream(loadingFilePath);
