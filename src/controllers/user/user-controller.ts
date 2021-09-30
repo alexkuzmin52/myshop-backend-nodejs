@@ -10,7 +10,6 @@ export class UserController {
    createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
      try {
        const user = req.body as IUser;
-
        user.password = await hashedPassword(user.password);
 
        const {_id} = await userService.createUser(user);
@@ -106,6 +105,16 @@ export class UserController {
        next(e);
      }
    }
+
+  getUsers = async (req: IRequestExtended, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const users = await userService.getAllUsers();
+      res.json(users);
+    } catch (e) {
+      next(e);
+    }
+
+  }
 }
 
 export const userController = new UserController();

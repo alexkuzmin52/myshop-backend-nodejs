@@ -12,6 +12,9 @@ import {uploadCSVProduct, uploadProduct} from '../../config';
 const router = Router();
 
 router.get('/filter', productController.getProductsByFilter);
+router.get('/categories', productController.getCategoriesWithProducts);
+router.get('/property', productController.getAllPropertiesOfProducts);
+
 router.get('/:productID', productController.getProduct);
 router.get('/csv/file', productController.getCsvFile);
 router.get('/', productController.getProducts);

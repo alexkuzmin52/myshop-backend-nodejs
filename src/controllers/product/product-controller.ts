@@ -9,15 +9,11 @@ import {csvParserHelper, ProductQueryBuilder} from '../../helpers';
 import {customErrors, ErrorHandler} from '../../errors';
 import {logService, productService} from '../../services';
 
-// import * as findUp from 'find-up';
-
 export class ProductController {
   /***********************************CRUD products***********************************/
   getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const allProducts = await productService.getProducts();
-      console.log('************************************************allProducts*********************');
-      console.log(allProducts.length);
       res.json(allProducts);
     } catch (e) {
       next(e);
@@ -26,8 +22,9 @@ export class ProductController {
 
   getProductsByFilter = async (req: Request, res: Response, next: NextFunction) => {
     try {
+
       if (!req.query.limit) {
-        req.query.limit = '20';
+        req.query.limit = '40';
       }
       if (!req.query.page) {
         req.query.page = '1';
@@ -50,7 +47,6 @@ export class ProductController {
   }
 
   getProduct = async (req: Request, res: Response, next: NextFunction) => {
-    console.log('getProduct = async');
     try {
       const product = await productService.getProduct(+req.params.productID);
 
@@ -145,12 +141,14 @@ export class ProductController {
   addProductMultiPhoto = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const photos = req.files as Express.Multer.File[];
-
+      const product = req.product as IProduct;
       for (const photo of photos) {
-        await productService.addProductPhotos(photo.originalname, req.product?._id);
+        await productService.addProductPhotos(photo.originalname, product._id);
       }
-
-      res.json({message: 'YES!!!'});
+      const updatedProduct = await productService.findProductByID(product._id);
+      // console.log(updatedProduct?.photo);
+      // res.json({message: 'YES!!!'});
+      res.json(updatedProduct?.photo);
     } catch (e) {
       next(e);
     }
@@ -159,23 +157,13 @@ export class ProductController {
   getProductPhoto = (req: IRequestExtended, res: Response, next: NextFunction) => {
     const {title} = req.product as ProductType;
     const filePath = `public/product/${title}/${req.params.photoTitle}`;
-
-    // const isFile = await findUp(filePath);
-    // console.log(isFile);
-    // if (isFile) {
-    //   if (!customConfirm('This file already exists. Do you want to replace it?')) {
-    //     return;
-    //   }
-    // }
-    //
+    console.log(filePath);
     const typeFile = path.extname(filePath).slice(1);
     const loadingFile = fs.createReadStream(filePath);
     loadingFile.on('open', () => {
       res.setHeader('Content-Type', `image/${typeFile}`);
       loadingFile.pipe(res);
     });
-    // await res.json('done');
-
   }
 
   deletePhotoProduct = async (req: IRequestExtended, res: Response, next: NextFunction) => {
@@ -195,21 +183,18 @@ export class ProductController {
   addProductReview = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const update = {...req.body, userID: req.user?._id, createdAt: Date.now()} as IReview;
-
       const updatedProduct = await productService.updateProductByReview(req.product?._id as string, update);
 
       res.json(updatedProduct);
     } catch (e) {
       next(e);
     }
-
   }
 
   deleteComment = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
       const product = req.product as IProduct;
       const commentID = req.params.commentID;
-
       const updatedProduct = await productService.removeCommentExt(product.id, commentID);
 
       res.json(updatedProduct);
@@ -250,6 +235,24 @@ export class ProductController {
       loadingFile.pipe(res);
     });
 
+  }
+
+  getCategoriesWithProducts = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    try {
+      const categories = await productService.findCategoriesWithProducts();
+      res.json(categories);
+    } catch (e) {
+      return next(e);
+    }
+  }
+
+  getAllPropertiesOfProducts = async (req: IRequestExtended, res: Response, next: NextFunction) => {
+    try {
+      const brands = await productService.findPropertyByProducts(req.query.property as string);
+      res.json(brands);
+    } catch (e) {
+      return next(e);
+    }
   }
 }
 

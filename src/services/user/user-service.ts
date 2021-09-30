@@ -53,6 +53,9 @@ export class UserService {
     ).exec();
   }
 
+  getAllUsers(): Promise<IUser[]> {
+    return UserModel.find({}).exec();
+  }
 }
 
 export const userService = new UserService();

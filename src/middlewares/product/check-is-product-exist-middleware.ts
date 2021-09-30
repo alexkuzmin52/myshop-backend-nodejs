@@ -9,6 +9,7 @@ export const checkIsProductExistMiddleware = async (
   req: IRequestExtended,
   res: Response,
   next: NextFunction): Promise<void> => {
+  console.log(req.params.productID);
   const productByID = await productService.findOneByProperty({id: +req.params.productID});
 
   if (!productByID) {

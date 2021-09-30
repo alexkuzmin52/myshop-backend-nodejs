@@ -16,9 +16,9 @@ import {testCategoryRouter} from './routes';
 dotenv.config();
 
 const serverRequestLimit = rateLimit({
-  windowMs: config.serverRateLimits.maxRequests,
+  windowMs: config.serverRateLimits.period,
   max: config.serverRateLimits.maxRequests
-}); //TODO
+}); //TODO message, headers
 
 class App {
   public readonly app: express.Application = express();

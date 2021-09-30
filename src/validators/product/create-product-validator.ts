@@ -19,7 +19,7 @@ export const createProductValidator = Joi.object(
     brand: Joi
       .string()
       .trim()
-      .alphanum()
+      // .alphanum()
       .min(2)
       .max(30),
     category: Joi
@@ -36,7 +36,7 @@ export const createProductValidator = Joi.object(
     countryOfManufacture: Joi
       .string()
       .trim()
-      .alphanum()
+      // .alphanum()
       .min(2)
       .max(30),
     discountFlag: Joi
@@ -44,7 +44,7 @@ export const createProductValidator = Joi.object(
     discount: Joi
       .number()
       .min(0)
-      .max(0.99),
+      .max(99),
     originalPrice: Joi
       .number()
       .min(0.01)

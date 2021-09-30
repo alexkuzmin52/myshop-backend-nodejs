@@ -392,7 +392,7 @@ class CategoryController {
   }
   createCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
     try {
-      const csvFilePath = 'public/category/csv/Categories.csv';
+      const csvFilePath = 'public/category/csv/Category.csv';
       const categoryArray = await csvParserHelper(csvFilePath);
 
       for (const cat of categoryArray) {
@@ -417,7 +417,7 @@ class CategoryController {
     }
   }
   createSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
-    const subCategoryArray = await csvParserHelper('public/category/csv/SubCategories.csv');
+    const subCategoryArray = await csvParserHelper('public/category/csv/SubCategory.csv');
 
     for (const cat of subCategoryArray) {
       const {title} = cat as Partial<ISubCategory>;
@@ -437,7 +437,7 @@ class CategoryController {
     res.json(allSubCategories);
   }
   createSubSubCategoriesFromCSV = async (req: IRequestExtended, res: Response, next: NextFunction) => {
-    const subSubCategoryArray = await csvParserHelper('public/category/csv/SubSubCategories.csv');
+    const subSubCategoryArray = await csvParserHelper('public/category/csv/SubSubCategory.csv');
 
     for (const cat of subSubCategoryArray) {
       const {title} = cat as Partial<ISubSubCategory>;

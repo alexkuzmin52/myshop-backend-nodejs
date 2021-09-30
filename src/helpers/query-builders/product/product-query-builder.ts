@@ -3,7 +3,8 @@ import {IProductFilter, IProductFilterQuery} from '../../../models';
 export const ProductQueryBuilder = (query: Partial<IProductFilterQuery>): Partial<IProductFilter> => {
   const productFilter: Partial<IProductFilter> = {};
   const keys = Object.keys(query) as Array<keyof IProductFilterQuery>;
-
+  console.log('console.log(keys);');
+  console.log(keys);
   keys.forEach((key) => {
     switch (key) {
       case 'category':
@@ -18,11 +19,16 @@ export const ProductQueryBuilder = (query: Partial<IProductFilterQuery>): Partia
       case 'newFlag':
         productFilter.newFlag = Boolean(query.newFlag);
         break;
+      case 'promoFlag':
+        productFilter.promoFlag = Boolean(query.promoFlag);
+        break;
       case 'brand':
         productFilter.brand = query.brand;
         break;
       case 'title':
         productFilter.title = query.title;
+        console.log('productFilter');
+        console.log(productFilter);
         break;
       case 'countryOfManufacture':
         productFilter.countryOfManufacture = query.countryOfManufacture;

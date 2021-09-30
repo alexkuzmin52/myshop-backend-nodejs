@@ -8,10 +8,6 @@ export class ProductService {
 
   getProducts(): Promise<ProductType[]> {
     return ProductModel.find({}).exec();
-    // const products =  ProductModel.find({}).exec();
-    //  console.log('++++++++++++++++++++++++++++++++++++++++++++++ products');
-    //  console.log(products);
-    //  return products;
   }
 
   createProduct(product: Partial<IProduct>): Promise<ProductType> {
@@ -41,6 +37,8 @@ export class ProductService {
 
   findProductsByFilter(filterQuery: Partial<IProductFilter>, limit: number, page: number): Promise<IProduct[] | []> {
     const skip = limit * (page - 1);
+    console.log('filterQuery');
+    console.log(filterQuery);
 
     return ProductModel.find(filterQuery).skip(skip).limit(limit).exec();
   }
@@ -94,8 +92,7 @@ export class ProductService {
 
   addProductPhotos(originalName: string, _id: string | undefined) {
     return ProductModel.findByIdAndUpdate(_id,
-      {$push: {photo: originalName}},{new: true})
-    ;
+      {$addToSet: {photo: originalName}},{new: true});
   }
 
   removePhotoOfProduct(_id: Partial<IProduct>, photoTitle: string): Promise<ProductType | null> {
@@ -104,6 +101,14 @@ export class ProductService {
         photo: photoTitle
       }},
       {new : true}).exec();
+  }
+
+  findCategoriesWithProducts(): Promise<string[]> {
+    return ProductModel.distinct('category').exec();
+  }
+
+  findPropertyByProducts(property: string): Promise<string[]> {
+    return ProductModel.distinct(property).exec();
   }
 }
 

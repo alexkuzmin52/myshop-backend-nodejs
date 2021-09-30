@@ -3,6 +3,7 @@ export interface IProductFilterQuery {
   priceGte?: number;
   priceLte?: number;
   newFlag?: boolean;
+  promoFlag?: boolean,
   title?: string;
   brand?: string;
   countryOfManufacture?: string;

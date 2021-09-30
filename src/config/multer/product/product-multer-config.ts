@@ -4,13 +4,14 @@ import {IRequestExtended} from '../../../models';
 import * as fs from 'fs-extra';
 
 const storage = multer.diskStorage({
-  // destination: (req, file, callback) => {
-  //   callback(null, 'public/product');
-  // },
   destination: (req: IRequestExtended, file, callback) => {
     const {title} = req.product as ProductType;
     const path = `public/product/${title}`;
-    fs.mkdirsSync(path);
+
+    if (!fs.pathExistsSync(path)) {
+      fs.mkdirSync(path);
+    }
+
     callback(null, path);
   },
 
@@ -21,6 +22,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: Express.Multer.File, callback: any) => {
+
   if (file.mimetype === 'image/jpg' ||
     file.mimetype === 'image/jpeg' ||
     file.mimetype === 'image/png') {
