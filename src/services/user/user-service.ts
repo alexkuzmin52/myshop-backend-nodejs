@@ -1,7 +1,6 @@
 import {Types} from 'mongoose';
-
 import {ActionEnum} from '../../constants';
-import {IUser, IUserToken} from '../../models';
+import {IUser, IUserFilter, IUserToken} from '../../models';
 import {UserModel, UserType} from '../../database';
 
 export class UserService {
@@ -35,6 +34,7 @@ export class UserService {
       ]
     }).exec();
   }
+
   //TODO
   UpdateUserByPropertyOld(id: Partial<IUser>, property: Partial<IUser>): Promise<UserType> {
     return UserModel.updateOne(
@@ -46,6 +46,10 @@ export class UserService {
   }
 
   UpdateUserByProperty(id: Partial<IUser>, property: Partial<IUser>): Promise<UserType | null> {
+    console.log('UpdateUserByProperty************************************************');
+    console.log(id);
+    console.log(property);
+
     return UserModel.findOneAndUpdate(
       id,
       property,
@@ -54,8 +58,33 @@ export class UserService {
   }
 
   getAllUsers(): Promise<IUser[]> {
-    return UserModel.find({}).exec();
+    return UserModel.find({}, {password: 0, tokens: 0}).exec();
   }
+
+  getUserById(userID: any): Promise<UserType | null> {
+    return UserModel.findById(userID).exec();
+  }
+
+  getUserByParam(userID: string): Promise<UserType | null> {
+    return UserModel.findOne({_id: userID})
+      .select(['-password', '-tokens', '-email'])
+      .exec();
+  }
+
+  getUserByParams(param: Partial<IUser>): Promise<UserType | null> {
+    return UserModel.findOne(param)
+      .select(['-password', '-tokens', '-email'])
+      .exec();
+  }
+
+  findUsersByFilter(filterQuery: Partial<IUserFilter>, limit: number, page: number): Promise<IUser[] | []> {
+    const skip = limit * (page - 1);
+    console.log('filterQuery');
+    console.log(filterQuery);
+
+    return UserModel.find(filterQuery).skip(skip).limit(limit).exec();
+  }
+
 }
 
 export const userService = new UserService();

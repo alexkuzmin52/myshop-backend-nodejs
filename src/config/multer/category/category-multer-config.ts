@@ -8,14 +8,15 @@ const storage = multer.diskStorage(
     destination: (req: IRequestExtended, file, callback) => {
       const {title} = req.category as CategoryType;
       const path = `public/category/${title}`;
-      if (!fs.pathExistsSync(path)) {
-        fs.mkdirSync(path);
-      }
+      // if (!fs.pathExistsSync(path)) {
+      //   fs.mkdirSync(path);
+      // }
+      fs.emptyDirSync(path);
       callback(null, path);
     },
     filename: (req: any, file: any, callback: any) => {
       req.body.logo = file.originalname;
-      console.log(req.body.logo);
+      // console.log(req.body.logo);
       callback(null, file.originalname);
     }
   }

@@ -35,7 +35,7 @@ export const UserSchema = new Schema<IUser>({
   },
   age: {
     type: Number,
-    required: true
+    required: false
   },
   phone: {
     type: String,
@@ -43,11 +43,13 @@ export const UserSchema = new Schema<IUser>({
   },
   gender: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
   photo: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
   status: {
     type: String,

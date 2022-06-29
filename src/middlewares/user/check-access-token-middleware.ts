@@ -32,7 +32,9 @@ export const checkAccessTokenMiddleware = async (
     }
 
     req.user = userByAccessToken.userID;
-    console.log('checkAccessTokenMiddleware');
+    // console.log('checkAccessTokenMiddleware');
+    // console.log(userByAccessToken);
+    // console.log(req.user);
     next();
 
   } catch (e) {

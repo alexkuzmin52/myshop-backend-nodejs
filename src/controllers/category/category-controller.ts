@@ -137,10 +137,10 @@ class CategoryController {
   }
   GetSubCategoriesFromCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log('эGetSubCategoriesFromCategory');
-      console.log(req.params.cat_id);
+      // console.log('эGetSubCategoriesFromCategory');
+      // console.log(req.params.cat_id);
       const subcategories = await categoryService.getSubCategoriesByParams({parentID: +req.params.cat_id});
-      console.log(subcategories);
+      // console.log(subcategories);
       res.json(subcategories);
 
     } catch (e) {
@@ -176,7 +176,10 @@ class CategoryController {
   //get SubCategory by its title
   GetSubCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const subcategory = await categoryService.getSubCategoryByParams({parentID: +req.params.cat_id});
+      console.log(req.params.cat_id);
+      // const subcategory = await categoryService.getSubCategoryByParams({parentID: +req.params.cat_id});
+      const subcategory = await categoryService.getSubCategoryByParams({id: +req.params.cat_id});
+      console.log(subcategory);
       res.json(subcategory);
     } catch (e) {
       next(e);

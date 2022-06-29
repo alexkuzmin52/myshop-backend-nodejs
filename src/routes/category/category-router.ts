@@ -75,6 +75,7 @@ router.get('/subsubcategory', categoryController.GetAllSubSubCategories);
 
 router.get('/:cat_id', categoryController.GetCategory);
 router.get('/subcategory/:cat_id', categoryController.GetSubCategoriesFromCategory);
+router.get('/subcategory/sub/:cat_id', categoryController.GetSubCategory);
 router.get('/subsubcategory/:cat_id', categoryController.GetSubSubCategoriesFromSubCategory);
 router.get('', categoryController.GetAllCategories);
 
